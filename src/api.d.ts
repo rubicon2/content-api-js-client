@@ -2,6 +2,11 @@ interface ApiResponse {
   response: ApiResponseSuccessBody | ApiResponseErrorBody;
 }
 
+interface ApiResponseErrorBody {
+  status: 'error';
+  message: string;
+}
+
 interface ApiResponseSuccessBody {
   status: 'ok';
   userTier: 'developer' | 'commercial';
@@ -10,9 +15,4 @@ interface ApiResponseSuccessBody {
 
 interface ApiItemResponse extends ApiResponseSuccessBody {
   content: object;
-}
-
-interface ApiResponseErrorBody {
-  status: 'error';
-  message: string;
 }
