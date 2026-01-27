@@ -13,7 +13,7 @@ class Client {
 
     if (response.ok) {
       const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiItemResponse;
+      const data = apiResponse.response as ApiResponseSingle;
       return data.content;
     } else {
       throw new Error('Fetch request failed: ' + response.status);
