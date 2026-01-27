@@ -2,14 +2,16 @@ import * as data from './apiResponseData';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 
+const BASE_URL = 'https://content.guardianapis.com';
+
 export const server = setupServer(
   http.get(
-    'https://content.guardianapis.com/technology/2014/feb/18/doge-such-questions-very-answered',
+    `${BASE_URL}/technology/2014/feb/18/doge-such-questions-very-answered`,
     () => {
       return HttpResponse.json(data.item);
     },
   ),
-  http.all('https://content.guardianapis.com*', () => {
+  http.all(`${BASE_URL}*`, () => {
     // I.e. not caught by any other routes. 404.
     return HttpResponse.json(
       {
