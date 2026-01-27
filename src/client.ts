@@ -1,4 +1,4 @@
-import { searchParamsToStr } from './params';
+import { paramsToStr } from './params';
 
 class Client {
   #apiKey: string;
@@ -22,9 +22,9 @@ class Client {
     }
   }
 
-  async content(params: SearchParams = {}): Promise<Array<Content>> {
+  async content(params: QueryContentParams = {}): Promise<Array<Content>> {
     const response: Response = await fetch(
-      `${this.#baseUrl}/search?api-key=${this.#apiKey}&${searchParamsToStr(params)}`,
+      `${this.#baseUrl}/search?api-key=${this.#apiKey}&${paramsToStr(params)}`,
     );
 
     if (response.ok) {

@@ -69,9 +69,8 @@ interface ApiParams {
   callback?: string;
 }
 
-interface SearchParams extends ApiParams {
-  q?: string;
-  queryFields?: Array<string>;
+// Applicable to item and search endpoints.
+interface ContentParams extends ApiParams {
   section?: string;
   reference?: string;
   referenceType?: string;
@@ -95,4 +94,9 @@ interface SearchParams extends ApiParams {
   showElements?: Array<ShowElement>;
   showReferences?: Array<ShowReference>;
   showRights?: Array<ShowRight>;
+}
+
+interface QueryContentParams extends ContentParams {
+  q?: string;
+  queryFields?: Array<string>;
 }
