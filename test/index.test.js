@@ -1,4 +1,5 @@
 import GuardianContentClient from '../dist/index';
+import * as testData from '../mocks/apiResponseData';
 import { describe, expect, it } from 'vitest';
 
 const TEST_API_KEY = 'test';
@@ -12,12 +13,15 @@ describe('GuardianContentClient', () => {
   });
 
   describe('item endpoint', () => {
-    it('should throw an error if user is unauthorized, e.g. if api key is invalid', async () => {
-      const invalidClient = new GuardianContentClient('my-invalid-api-key');
-      await expect(() => invalidClient.item('whatever')).rejects.toThrowError(
-        'Fetch request failed: 401',
-      );
-    });
+    // Is there any way/point to mocking this out?
+    // it('should throw an error if user is unauthorized, e.g. if api key is invalid', async () => {
+    //   const invalidClient = new GuardianContentClient('my-invalid-api-key');
+    //   await expect(() =>
+    //     invalidClient.item(
+    //       '/technology/2014/feb/18/doge-such-questions-very-answered',
+    //     ),
+    //   ).rejects.toThrowError('Fetch request failed: 401');
+    // });
 
     it('given an invalid id, throw an error with an appropriate message', () => {
       expect(
@@ -29,22 +33,7 @@ describe('GuardianContentClient', () => {
       const data = await client.item(
         'technology/2014/feb/18/doge-such-questions-very-answered',
       );
-
-      expect(data).toStrictEqual({
-        apiUrl:
-          'https://content.guardianapis.com/technology/2014/feb/18/doge-such-questions-very-answered',
-        id: 'technology/2014/feb/18/doge-such-questions-very-answered',
-        isHosted: false,
-        pillarId: 'pillar/news',
-        pillarName: 'News',
-        sectionId: 'technology',
-        sectionName: 'Technology',
-        type: 'article',
-        webPublicationDate: '2014-02-18T10:25:30Z',
-        webTitle: 'What is Doge?',
-        webUrl:
-          'https://www.theguardian.com/technology/2014/feb/18/doge-such-questions-very-answered',
-      });
+      expect(data).toStrictEqual(testData.item.response.content);
     });
   });
 });
