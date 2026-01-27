@@ -1,6 +1,12 @@
 import { server } from '../mocks/api';
-import { beforeAll, beforeEach, afterAll } from 'vitest';
+import { beforeAll, beforeEach, afterAll, vi } from 'vitest';
 
 beforeAll(() => server.listen());
-beforeEach(() => server.resetHandlers());
-afterAll(() => server.close());
+beforeEach(() => {
+  vi.resetAllMocks();
+  server.resetHandlers();
+});
+afterAll(() => {
+  vi.restoreAllMocks();
+  server.close();
+});
