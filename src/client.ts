@@ -22,14 +22,14 @@ class Client {
     }
   }
 
-  async content(params: QueryContentParams = {}): Promise<Array<Content>> {
+  async search(params: QueryContentParams = {}): Promise<Array<Content>> {
     const response: Response = await fetch(
       `${this.#baseUrl}/search?api-key=${this.#apiKey}&${paramsToStr(params)}`,
     );
 
     if (response.ok) {
       const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiContentResponse;
+      const data = apiResponse.response as ApiSearchResponse;
       return data.results;
     } else {
       throw new Error('Fetch request failed: ' + response.status);

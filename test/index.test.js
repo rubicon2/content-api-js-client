@@ -39,13 +39,13 @@ describe('GuardianContentClient', () => {
 
   describe('search endpoint', () => {
     it('returns an array of content items', async () => {
-      const content = await client.content();
+      const content = await client.search();
       expect(content).toStrictEqual(testData.search.response.results);
     });
 
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
-      await client.content({
+      await client.search({
         format: 'json',
         callback: 'myCallback',
         q: 'mega',
