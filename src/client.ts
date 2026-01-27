@@ -1,3 +1,5 @@
+import { searchParamsToStr } from './params';
+
 class Client {
   #apiKey: string;
   #baseUrl: string = 'https://content.guardianapis.com';
@@ -15,6 +17,20 @@ class Client {
       const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
       const data = apiResponse.response as ApiResponseSingle;
       return data.content;
+    } else {
+      throw new Error('Fetch request failed: ' + response.status);
+    }
+  }
+
+  async content(params: SearchParams = {}): Promise<Array<Content>> {
+    const response: Response = await fetch(
+      `${this.#baseUrl}/search?api-key=${this.#apiKey}&${searchParamsToStr(params)}`,
+    );
+
+    if (response.ok) {
+      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
+      const data = apiResponse.response as ApiContentResponse;
+      return data.results;
     } else {
       throw new Error('Fetch request failed: ' + response.status);
     }

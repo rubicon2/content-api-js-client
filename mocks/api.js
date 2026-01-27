@@ -11,6 +11,9 @@ export const server = setupServer(
       return HttpResponse.json(data.item);
     },
   ),
+  http.get(`${BASE_URL}/search`, () => {
+    return HttpResponse.json(data.search);
+  }),
   http.all(`${BASE_URL}*`, () => {
     // I.e. not caught by any other routes. 404.
     return HttpResponse.json(

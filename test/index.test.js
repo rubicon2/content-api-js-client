@@ -1,6 +1,6 @@
 import GuardianContentClient from '../dist/index';
 import * as testData from '../mocks/apiResponseData';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 const TEST_API_KEY = 'test';
 const client = new GuardianContentClient(TEST_API_KEY);
@@ -34,6 +34,31 @@ describe('GuardianContentClient', () => {
         'technology/2014/feb/18/doge-such-questions-very-answered',
       );
       expect(data).toStrictEqual(testData.item.response.content);
+    });
+  });
+
+  describe('search endpoint', () => {
+    it('returns an array of content items', async () => {
+      const content = await client.content();
+      expect(content).toStrictEqual(testData.search.response.results);
+    });
+
+    it('with a first parameter of query object, turn into a query string and append to request', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch');
+      await client.content({
+        format: 'json',
+        callback: 'myCallback',
+        q: 'mega',
+        queryFields: ['body', 'headline', 'byline'],
+        starRating: 5,
+        lang: 'en',
+        orderBy: 'newest',
+      });
+      // Just need to make sure the http request is provided the correct query string.
+      const fetchUrl = fetchSpy.mock.lastCall[0];
+      expect(fetchUrl).toMatch(
+        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+      );
     });
   });
 });
