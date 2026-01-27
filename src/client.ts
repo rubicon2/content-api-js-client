@@ -1,4 +1,4 @@
-import { paramsToStr } from './params';
+import { paramsToStr } from './params.js';
 
 class Client {
   #apiKey: string;
