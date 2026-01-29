@@ -62,12 +62,12 @@ interface Section extends ApiItem {
   editions: Array<Required<Edition>>;
 }
 
-interface ApiSearchResponse extends ApiResponseMultiple {
+interface ApiSearchResponse extends ApiResponseMultiple, ApiResponsePage {
   orderBy: SortOrder;
   results: Array<Content>;
 }
 
-interface ApiTagsResponse extends ApiResponseMultiple {
+interface ApiTagsResponse extends ApiResponseMultiple, ApiResponsePage {
   results: Array<Tag>;
 }
 
