@@ -2,7 +2,8 @@ import GuardianContentClient from '../dist/index';
 import * as testData from '../mocks/apiResponseData';
 import { describe, expect, it, vi } from 'vitest';
 
-const TEST_API_KEY = 'test';
+// The unit test fetch requests should be intercepted by MSW server, so api key doesn't matter.
+const TEST_API_KEY = 'some-random-key';
 const client = new GuardianContentClient(TEST_API_KEY);
 
 describe('GuardianContentClient', () => {
