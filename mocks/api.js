@@ -14,6 +14,21 @@ export const server = setupServer(
   http.get(`${BASE_URL}/search`, () => {
     return HttpResponse.json(data.search);
   }),
+  http.get(`${BASE_URL}/content/:id*/next`, ({ params }) => {
+    const testData = data.search.response.results;
+    // Since item id contains forward slashes, this is interpreted as many different path segments.
+    // MSW returns this as an array, so will need to join together to get the actual id.
+    const lastItemId = params.id.join('/');
+    // Get all results after that item.
+    const results = testData.slice(
+      testData.findIndex((item) => item.id === lastItemId) + 1,
+    );
+    return HttpResponse.json({
+      response: {
+        results,
+      },
+    });
+  }),
   http.all(`${BASE_URL}*`, () => {
     // I.e. not caught by any other routes. 404.
     return HttpResponse.json(

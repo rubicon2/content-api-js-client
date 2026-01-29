@@ -61,4 +61,40 @@ describe('GuardianContentClient', () => {
       );
     });
   });
+
+  describe('next endpoint', () => {
+    it('returns the next set of results after the provided id parameter', async () => {
+      const originalContent = testData.search.response.results;
+      let lastItem = originalContent[0];
+      for (let i = 1; i < originalContent.length; i++) {
+        const nextContent = await client.next(lastItem.id);
+        const expectedContent = originalContent.slice(
+          originalContent.findIndex((content) => content.id === lastItem.id) +
+            1,
+        );
+        expect(nextContent).toStrictEqual(expectedContent);
+        expect(nextContent.length).toStrictEqual(originalContent.length - i);
+        lastItem = nextContent[0];
+      }
+    });
+
+    it('with a second parameter of query object, turn into a query string and append to request', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch');
+      const lastItem = testData.search.response.results[0];
+      await client.next(lastItem.id, {
+        format: 'json',
+        callback: 'myCallback',
+        q: 'mega',
+        queryFields: ['body', 'headline', 'byline'],
+        starRating: 5,
+        lang: 'en',
+        orderBy: 'newest',
+      });
+      // Just need to make sure the http request is provided the correct query string.
+      const fetchUrl = fetchSpy.mock.lastCall[0];
+      expect(fetchUrl).toMatch(
+        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+      );
+    });
+  });
 });

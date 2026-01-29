@@ -35,6 +35,23 @@ class Client {
       throw new Error('Fetch request failed: ' + response.status);
     }
   }
+
+  async next(
+    id: string,
+    params: QueryContentParams = {},
+  ): Promise<Array<Content>> {
+    const response: Response = await fetch(
+      `${this.#baseUrl}/content/${id}/next?api-key=${this.#apiKey}&${paramsToStr(params)}`,
+    );
+
+    if (response.ok) {
+      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
+      const data = apiResponse.response as ApiSearchResponse;
+      return data.results;
+    } else {
+      throw new Error('Fetch request failed: ' + response.status);
+    }
+  }
 }
 
 export default Client;
