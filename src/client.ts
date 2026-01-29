@@ -8,7 +8,7 @@ class Client {
     this.#apiKey = apiKey;
   }
 
-  async item(id: string): Promise<object> {
+  async item(id: string): Promise<Content> {
     const response: Response = await fetch(
       `${this.#baseUrl}/${id}?api-key=${this.#apiKey}`,
     );

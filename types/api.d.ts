@@ -15,7 +15,7 @@ interface ApiResponseSuccessBody {
 }
 
 interface ApiResponseSingle extends ApiResponseSuccessBody {
-  content: ApiItem;
+  content: Content;
 }
 
 interface ApiResponseMultiple extends ApiResponseSuccessBody {
