@@ -80,6 +80,20 @@ class Client {
       throw new Error('Fetch request failed: ' + response.status);
     }
   }
+
+  async editions(params: QueryEditionParams = {}): Promise<Array<Edition>> {
+    const response: Response = await fetch(
+      `${this.#baseUrl}/editions?api-key=${this.#apiKey}&${paramsToStr(params)}`,
+    );
+
+    if (response.ok) {
+      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
+      const data = apiResponse.response as ApiEditionsResponse;
+      return data.results;
+    } else {
+      throw new Error('Fetch request failed: ' + response.status);
+    }
+  }
 }
 
 export default Client;

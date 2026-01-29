@@ -116,3 +116,7 @@ interface QueryTagParams extends ApiParams {
 interface QuerySectionParams extends ApiParams {
   q?: string;
 }
+
+interface QueryEditionParams extends ApiParams {
+  q?: string;
+}

@@ -35,6 +35,9 @@ export const server = setupServer(
   http.get(`${BASE_URL}/sections`, () => {
     return HttpResponse.json(data.sections);
   }),
+  http.get(`${BASE_URL}/editions`, () => {
+    return HttpResponse.json(data.editions);
+  }),
   http.all(`${BASE_URL}*`, () => {
     // I.e. not caught by any other routes. 404.
     return HttpResponse.json(

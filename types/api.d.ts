@@ -79,3 +79,7 @@ interface ApiTagsResponse extends ApiResponseMultiple, ApiResponsePage {
 interface ApiSectionsResponse extends ApiResponseMultiple {
   results: Array<Section>;
 }
+
+interface ApiEditionsResponse extends ApiResponseMultiple {
+  results: Array<Edition>;
+}
