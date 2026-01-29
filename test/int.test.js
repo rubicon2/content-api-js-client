@@ -69,4 +69,54 @@ describe('GuardianContentClient', () => {
       }
     });
   });
+
+  describe('next endpoint', () => {
+    it('given an invalid id, throw an error with an appropriate message', async () => {
+      await expect(client.next('my-invalid-item-id')).rejects.toThrowError(
+        'Fetch request failed: 404',
+      );
+    });
+
+    it('returns the next set of results after the provided id parameter', async () => {
+      let originalContent = await client.search({
+        q: 'mega',
+        queryFields: ['headline'],
+        showFields: ['headline'],
+        orderBy: 'oldest',
+      });
+      // Make sure we have enough items to page over.
+      expect(originalContent.length).toBeGreaterThan(2);
+
+      // Get last item which we will skip over with next.
+      const lastItem = originalContent[0];
+      const nextContent = await client.next(lastItem.id, {
+        q: 'mega',
+        queryFields: ['headline'],
+        showFields: ['headline'],
+        orderBy: 'oldest',
+      });
+      // So the first piece of content in nextContent should match the second in originalContent.
+      expect(nextContent[0]).toStrictEqual(originalContent[1]);
+    });
+
+    it('with a first parameter of query object, turn into a query string and append to request', async () => {
+      const originalContent = await client.search({
+        q: 'mega',
+        queryFields: ['headline'],
+        showFields: ['headline'],
+        orderBy: 'oldest',
+      });
+      const nextContent = await client.next(
+        originalContent[originalContent.length - 1].id,
+        {
+          q: 'mega',
+          queryFields: ['headline'],
+          showFields: ['headline'],
+        },
+      );
+      for (const item of nextContent) {
+        expect(item.fields.headline).toMatch(/mega/i);
+      }
+    });
+  });
 });
