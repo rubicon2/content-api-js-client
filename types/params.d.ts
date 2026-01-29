@@ -112,3 +112,7 @@ interface QueryTagParams extends ApiParams {
   pageSize?: number;
   showReferences?: Array<ShowReference>;
 }
+
+interface QuerySectionParams extends ApiParams {
+  q?: string;
+}

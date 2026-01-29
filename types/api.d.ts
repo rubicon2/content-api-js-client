@@ -55,11 +55,16 @@ interface Tag extends ApiItem {
 interface Edition extends ApiItem {
   path: string;
   edition: string;
-  code?: string;
+}
+
+// Edition has path and edition strings, but on Section > Editions has neither, but has code.
+// Instead of extending or Pick<> or anything like that, just make a separate type for it.
+interface SectionEdition extends ApiItem {
+  code: string;
 }
 
 interface Section extends ApiItem {
-  editions: Array<Required<Edition>>;
+  editions: Array<SectionEdition>;
 }
 
 interface ApiSearchResponse extends ApiResponseMultiple, ApiResponsePage {
