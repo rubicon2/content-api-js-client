@@ -14,6 +14,9 @@ export const server = setupServer(
   http.get(`${BASE_URL}/search`, () => {
     return HttpResponse.json(data.search);
   }),
+  http.get(`${BASE_URL}/tags`, () => {
+    return HttpResponse.json(data.tags);
+  }),
   http.get(`${BASE_URL}/content/:id*/next`, ({ params }) => {
     const testData = data.search.response.results;
     // Since item id contains forward slashes, this is interpreted as many different path segments.

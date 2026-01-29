@@ -100,3 +100,15 @@ interface QueryContentParams extends ContentParams {
   q?: string;
   queryFields?: Array<string>;
 }
+
+interface QueryTagParams extends ApiParams {
+  q?: string;
+  webTitle?: string;
+  type?: string;
+  section?: string;
+  reference?: string;
+  referenceType?: string;
+  page?: number;
+  pageSize?: number;
+  showReferences?: Array<ShowReference>;
+}

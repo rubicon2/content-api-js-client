@@ -52,6 +52,20 @@ class Client {
       throw new Error('Fetch request failed: ' + response.status);
     }
   }
+
+  async tags(params: QueryTagParams = {}): Promise<Array<Tag>> {
+    const response: Response = await fetch(
+      `${this.#baseUrl}/tags?api-key=${this.#apiKey}&${paramsToStr(params)}`,
+    );
+
+    if (response.ok) {
+      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
+      const data = apiResponse.response as ApiTagsResponse;
+      return data.results;
+    } else {
+      throw new Error('Fetch request failed: ' + response.status);
+    }
+  }
 }
 
 export default Client;

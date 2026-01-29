@@ -12,6 +12,7 @@ describe('GuardianContentClient', () => {
     ).toBeInstanceOf(Promise);
     expect(client.search({ q: 'tennis' })).toBeInstanceOf(Promise);
     expect(client.next('some/content/id')).toBeInstanceOf(Promise);
+    expect(client.tags()).toBeInstanceOf(Promise);
   });
 
   describe('item endpoint', () => {
@@ -84,6 +85,31 @@ describe('GuardianContentClient', () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
       const lastItem = testData.search.response.results[0];
       await client.next(lastItem.id, {
+        format: 'json',
+        callback: 'myCallback',
+        q: 'mega',
+        queryFields: ['body', 'headline', 'byline'],
+        starRating: 5,
+        lang: 'en',
+        orderBy: 'newest',
+      });
+      // Just need to make sure the http request is provided the correct query string.
+      const fetchUrl = fetchSpy.mock.lastCall[0];
+      expect(fetchUrl).toMatch(
+        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+      );
+    });
+  });
+
+  describe('tags endpoint', () => {
+    it('returns an array of tag items', async () => {
+      const tags = await client.tags();
+      expect(tags).toStrictEqual(testData.tags.response.results);
+    });
+
+    it('with a first parameter of query object, turn into a query string and append to request', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch');
+      await client.tags({
         format: 'json',
         callback: 'myCallback',
         q: 'mega',
