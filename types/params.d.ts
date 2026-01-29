@@ -1,5 +1,4 @@
 // Types to encapsulate the values accepted by the api for each query parameter.
-type Format = 'json' | 'xml';
 type SortOrder = 'newest' | 'oldest' | 'relevance';
 type OrderDate = 'published' | 'newspaper-edition' | 'last-modified';
 type UseDate = OrderDate | 'first-publication';
@@ -64,13 +63,9 @@ type ShowReference =
 type ShowRight = 'syndicatable' | 'subscription-databases' | 'all';
 
 // Interfaces to encapsulate the accepted fields by each api endpoint.
-interface ApiParams {
-  format?: Format;
-  callback?: string;
-}
 
 // Applicable to item and search endpoints.
-interface ContentParams extends ApiParams {
+interface ContentParams {
   section?: string;
   reference?: string;
   referenceType?: string;
@@ -101,7 +96,7 @@ interface QueryContentParams extends ContentParams {
   queryFields?: Array<string>;
 }
 
-interface QueryTagParams extends ApiParams {
+interface QueryTagParams {
   q?: string;
   webTitle?: string;
   type?: string;
@@ -113,10 +108,10 @@ interface QueryTagParams extends ApiParams {
   showReferences?: Array<ShowReference>;
 }
 
-interface QuerySectionParams extends ApiParams {
+interface QuerySectionParams {
   q?: string;
 }
 
-interface QueryEditionParams extends ApiParams {
+interface QueryEditionParams {
   q?: string;
 }
