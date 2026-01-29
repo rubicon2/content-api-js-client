@@ -88,10 +88,10 @@ describe('GuardianContentClient', () => {
   });
 
   describe('item endpoint', () => {
-    it('given an invalid id, throw an error with an appropriate message', () => {
-      expect(
-        async () => await client.item('my-invalid-item-id'),
-      ).rejects.toThrowError('Fetch request failed: 404');
+    it('given an invalid id, throw an error with an appropriate message', async () => {
+      await expect(client.item('my-invalid-item-id')).rejects.toThrowError(
+        'Fetch request failed: 404',
+      );
     });
 
     it('should take an id and return the item as an object', async () => {
