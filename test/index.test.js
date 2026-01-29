@@ -40,6 +40,17 @@ describe('GuardianContentClient', () => {
       );
       expect(data).toStrictEqual(testData.item.response.content);
     });
+
+    it('with a first parameter of query object, turn into a query string and append to request', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch');
+      await client.search({
+        showFields: ['body', 'last-modified'],
+        showTags: 'all',
+      });
+      // Just need to make sure the http request is provided the correct query string.
+      const fetchUrl = fetchSpy.mock.lastCall[0];
+      expect(fetchUrl).toMatch('show-fields=body,last-modified&show-tags=all');
+    });
   });
 
   describe('search endpoint', () => {
