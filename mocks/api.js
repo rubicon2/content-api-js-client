@@ -19,9 +19,21 @@ export const server = setupServer(
     // Since item id contains forward slashes, this is interpreted as many different path segments.
     // MSW returns this as an array, so will need to join together to get the actual id.
     const lastItemId = params.id.join('/');
+    const lastItem = testData.find((item) => item.id === lastItemId);
+    if (!lastItem) {
+      return HttpResponse.json(
+        {
+          response: {
+            status: 'error',
+            message: 'The requested resource could not be found.',
+          },
+        },
+        { status: 404 },
+      );
+    }
     // Get all results after that item.
     const results = testData.slice(
-      testData.findIndex((item) => item.id === lastItemId) + 1,
+      testData.findIndex((item) => item.id === lastItem.id) + 1,
     );
     return HttpResponse.json({
       response: {

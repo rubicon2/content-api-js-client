@@ -12,7 +12,11 @@ describe('GuardianContentClient', () => {
       client.item('technology/2014/feb/18/doge-such-questions-very-answered'),
     ).toBeInstanceOf(Promise);
     expect(client.search({ q: 'tennis' })).toBeInstanceOf(Promise);
-    expect(client.next('some/content/id')).toBeInstanceOf(Promise);
+    expect(
+      client.next(
+        'sport/live/2026/jan/27/australian-open-2026-gauff-svitolina-alcaraz-de-minaur-live',
+      ),
+    ).toBeInstanceOf(Promise);
     expect(client.tags()).toBeInstanceOf(Promise);
     expect(client.sections()).toBeInstanceOf(Promise);
     expect(client.editions()).toBeInstanceOf(Promise);
@@ -64,9 +68,12 @@ describe('GuardianContentClient', () => {
     ).rejects.toThrowError(expectedError);
 
     await expect(() =>
-      client.next('technology/2014/feb/18/doge-such-questions-very-answered', {
-        callback: 'whatever',
-      }),
+      client.next(
+        'sport/live/2026/jan/27/australian-open-2026-gauff-svitolina-alcaraz-de-minaur-live',
+        {
+          callback: 'whatever',
+        },
+      ),
     ).rejects.toThrowError(expectedError);
 
     await expect(() =>
@@ -130,6 +137,12 @@ describe('GuardianContentClient', () => {
   });
 
   describe('next endpoint', () => {
+    it('given an invalid id, throw an error with an appropriate message', async () => {
+      await expect(client.next('my-invalid-item-id')).rejects.toThrowError(
+        'Fetch request failed: 404',
+      );
+    });
+
     it('returns the next set of results after the provided id parameter', async () => {
       const originalContent = testData.search.response.results;
       let lastItem = originalContent[0];
