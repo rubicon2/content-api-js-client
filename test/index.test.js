@@ -10,6 +10,8 @@ describe('GuardianContentClient', () => {
     expect(
       client.item('technology/2014/feb/18/doge-such-questions-very-answered'),
     ).toBeInstanceOf(Promise);
+    expect(client.search({ q: 'tennis' })).toBeInstanceOf(Promise);
+    expect(client.next('some/content/id')).toBeInstanceOf(Promise);
   });
 
   describe('item endpoint', () => {
