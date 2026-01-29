@@ -17,17 +17,69 @@ describe('GuardianContentClient', () => {
     expect(client.editions()).toBeInstanceOf(Promise);
   });
 
-  describe('item endpoint', () => {
-    // Is there any way/point to mocking this out?
-    // it('should throw an error if user is unauthorized, e.g. if api key is invalid', async () => {
-    //   const invalidClient = new GuardianContentClient('my-invalid-api-key');
-    //   await expect(() =>
-    //     invalidClient.item(
-    //       '/technology/2014/feb/18/doge-such-questions-very-answered',
-    //     ),
-    //   ).rejects.toThrowError('Fetch request failed: 401');
-    // });
+  it('each endpoint should reject a parameter of format with a value other than json', async () => {
+    const expectedError =
+      'Fetch request failed: client only supports json format response';
 
+    await expect(() =>
+      client.item('technology/2014/feb/18/doge-such-questions-very-answered', {
+        format: 'xml',
+      }),
+    ).rejects.toThrowError(expectedError);
+
+    await expect(() => client.search({ format: 'xml' })).rejects.toThrowError(
+      expectedError,
+    );
+
+    await expect(() =>
+      client.next('technology/2014/feb/18/doge-such-questions-very-answered', {
+        format: 'xml',
+      }),
+    ).rejects.toThrowError(expectedError);
+
+    await expect(() => client.tags({ format: 'xml' })).rejects.toThrowError(
+      expectedError,
+    );
+
+    await expect(() => client.editions({ format: 'xml' })).rejects.toThrowError(
+      expectedError,
+    );
+  });
+
+  it('each endpoint should reject a parameter of callback', async () => {
+    const expectedError =
+      'Fetch request failed: client does not support callback parameter';
+
+    await expect(() =>
+      client.item('technology/2014/feb/18/doge-such-questions-very-answered', {
+        callback: 'whatever',
+      }),
+    ).rejects.toThrowError(expectedError);
+
+    await expect(() =>
+      client.search({
+        callback: 'whatever',
+      }),
+    ).rejects.toThrowError(expectedError);
+
+    await expect(() =>
+      client.next('technology/2014/feb/18/doge-such-questions-very-answered', {
+        callback: 'whatever',
+      }),
+    ).rejects.toThrowError(expectedError);
+
+    await expect(() =>
+      client.tags({
+        callback: 'whatever',
+      }),
+    ).rejects.toThrowError(expectedError);
+
+    await expect(() =>
+      client.editions({ callback: 'whatever' }),
+    ).rejects.toThrowError(expectedError);
+  });
+
+  describe('item endpoint', () => {
     it('given an invalid id, throw an error with an appropriate message', () => {
       expect(
         async () => await client.item('my-invalid-item-id'),
@@ -62,8 +114,6 @@ describe('GuardianContentClient', () => {
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
       await client.search({
-        format: 'json',
-        callback: 'myCallback',
         q: 'mega',
         queryFields: ['body', 'headline', 'byline'],
         starRating: 5,
@@ -73,7 +123,7 @@ describe('GuardianContentClient', () => {
       // Just need to make sure the http request is provided the correct query string.
       const fetchUrl = fetchSpy.mock.lastCall[0];
       expect(fetchUrl).toMatch(
-        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+        'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
   });
@@ -98,8 +148,6 @@ describe('GuardianContentClient', () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
       const lastItem = testData.search.response.results[0];
       await client.next(lastItem.id, {
-        format: 'json',
-        callback: 'myCallback',
         q: 'mega',
         queryFields: ['body', 'headline', 'byline'],
         starRating: 5,
@@ -109,7 +157,7 @@ describe('GuardianContentClient', () => {
       // Just need to make sure the http request is provided the correct query string.
       const fetchUrl = fetchSpy.mock.lastCall[0];
       expect(fetchUrl).toMatch(
-        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+        'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
   });
@@ -123,8 +171,6 @@ describe('GuardianContentClient', () => {
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
       await client.tags({
-        format: 'json',
-        callback: 'myCallback',
         q: 'mega',
         queryFields: ['body', 'headline', 'byline'],
         starRating: 5,
@@ -134,7 +180,7 @@ describe('GuardianContentClient', () => {
       // Just need to make sure the http request is provided the correct query string.
       const fetchUrl = fetchSpy.mock.lastCall[0];
       expect(fetchUrl).toMatch(
-        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+        'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
   });
@@ -148,8 +194,6 @@ describe('GuardianContentClient', () => {
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
       await client.sections({
-        format: 'json',
-        callback: 'myCallback',
         q: 'mega',
         queryFields: ['body', 'headline', 'byline'],
         starRating: 5,
@@ -159,7 +203,7 @@ describe('GuardianContentClient', () => {
       // Just need to make sure the http request is provided the correct query string.
       const fetchUrl = fetchSpy.mock.lastCall[0];
       expect(fetchUrl).toMatch(
-        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+        'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
   });
@@ -173,8 +217,6 @@ describe('GuardianContentClient', () => {
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch');
       await client.editions({
-        format: 'json',
-        callback: 'myCallback',
         q: 'mega',
         queryFields: ['body', 'headline', 'byline'],
         starRating: 5,
@@ -184,7 +226,7 @@ describe('GuardianContentClient', () => {
       // Just need to make sure the http request is provided the correct query string.
       const fetchUrl = fetchSpy.mock.lastCall[0];
       expect(fetchUrl).toMatch(
-        'format=json&callback=myCallback&q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
+        'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
   });
