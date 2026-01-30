@@ -14,19 +14,20 @@ interface ApiResponseSuccessBody {
   total: number;
 }
 
-interface ApiResponseSingle extends ApiResponseSuccessBody {
-  content: Content;
+interface ApiResponseSingle<T> extends ApiResponseSuccessBody {
+  content: T;
 }
 
-interface ApiResponseMultiple extends ApiResponseSuccessBody {
-  results: Array;
+interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
+  results: Array<T>;
 }
 
-interface ApiResponsePage {
+interface ApiSearchResponse<T> extends ApiResponseMultiple<T> {
   startIndex: number;
   pageSize: number;
   currentPage: number;
   pages: number;
+  orderBy: SortOrder;
 }
 
 interface ApiItem {
@@ -58,7 +59,7 @@ interface Edition extends ApiItem {
   edition: string;
 }
 
-// Edition has path and edition strings, but on Section > Editions has neither, but has code.
+// Edition has path and edition strings, but Section > Editions has neither, but has code.
 // Instead of extending or Pick<> or anything like that, just make a separate type for it.
 interface SectionEdition extends ApiItem {
   code: string;
@@ -66,21 +67,4 @@ interface SectionEdition extends ApiItem {
 
 interface Section extends ApiItem {
   editions: Array<SectionEdition>;
-}
-
-interface ApiSearchResponse extends ApiResponseMultiple, ApiResponsePage {
-  orderBy: SortOrder;
-  results: Array<Content>;
-}
-
-interface ApiTagsResponse extends ApiResponseMultiple, ApiResponsePage {
-  results: Array<Tag>;
-}
-
-interface ApiSectionsResponse extends ApiResponseMultiple {
-  results: Array<Section>;
-}
-
-interface ApiEditionsResponse extends ApiResponseMultiple {
-  results: Array<Edition>;
 }

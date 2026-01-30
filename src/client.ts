@@ -31,12 +31,15 @@ class Client {
   }
 
   async item(id: string, params: ContentParams = {}): Promise<Content> {
-    const data: ApiResponseSingle = await this.#apiFetch(id, params);
+    const data: ApiResponseSingle<Content> = await this.#apiFetch(id, params);
     return data.content;
   }
 
   async search(params: QueryContentParams = {}): Promise<Array<Content>> {
-    const data: ApiSearchResponse = await this.#apiFetch('search', params);
+    const data: ApiSearchResponse<Content> = await this.#apiFetch(
+      'search',
+      params,
+    );
     return data.results;
   }
 
@@ -44,7 +47,7 @@ class Client {
     id: string,
     params: QueryContentParams = {},
   ): Promise<Array<Content>> {
-    const data: ApiSearchResponse = await this.#apiFetch(
+    const data: ApiSearchResponse<Content> = await this.#apiFetch(
       `content/${id}/next`,
       params,
     );
@@ -52,17 +55,23 @@ class Client {
   }
 
   async tags(params: QueryTagParams = {}): Promise<Array<Tag>> {
-    const data: ApiTagsResponse = await this.#apiFetch('tags', params);
+    const data: ApiResponseMultiple<Tag> = await this.#apiFetch('tags', params);
     return data.results;
   }
 
   async sections(params: QuerySectionParams = {}): Promise<Array<Section>> {
-    const data: ApiSectionsResponse = await this.#apiFetch('sections', params);
+    const data: ApiResponseMultiple<Section> = await this.#apiFetch(
+      'sections',
+      params,
+    );
     return data.results;
   }
 
   async editions(params: QueryEditionParams = {}): Promise<Array<Edition>> {
-    const data: ApiEditionsResponse = await this.#apiFetch('editions', params);
+    const data: ApiResponseMultiple<Edition> = await this.#apiFetch(
+      'editions',
+      params,
+    );
     return data.results;
   }
 }
