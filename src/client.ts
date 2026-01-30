@@ -17,9 +17,11 @@ class Client {
       | QuerySectionParams
       | QueryEditionParams,
   ) {
-    const response: Response = await fetch(
-      `${this.#baseUrl}/${url}?api-key=${this.#apiKey}&${paramsToStr(params)}`,
+    const sanitizedUrl = new URL(
+      `${url}?api-key=${this.#apiKey}&${paramsToStr(params)}`,
+      this.#baseUrl,
     );
+    const response: Response = await fetch(sanitizedUrl);
 
     if (response.ok) {
       const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;

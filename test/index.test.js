@@ -108,8 +108,10 @@ describe('GuardianContentClient', () => {
         showTags: 'all',
       });
       // Just need to make sure the http request is provided the correct query string.
-      const fetchUrl = fetchSpy.mock.lastCall[0];
-      expect(fetchUrl).toMatch('show-fields=body,last-modified&show-tags=all');
+      const url = fetchSpy.mock.lastCall[0];
+      expect(url.search).toMatch(
+        'show-fields=body,last-modified&show-tags=all',
+      );
     });
   });
 
@@ -129,8 +131,8 @@ describe('GuardianContentClient', () => {
         orderBy: 'newest',
       });
       // Just need to make sure the http request is provided the correct query string.
-      const fetchUrl = fetchSpy.mock.lastCall[0];
-      expect(fetchUrl).toMatch(
+      const url = fetchSpy.mock.lastCall[0];
+      expect(url.search).toMatch(
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
@@ -169,8 +171,8 @@ describe('GuardianContentClient', () => {
         orderBy: 'newest',
       });
       // Just need to make sure the http request is provided the correct query string.
-      const fetchUrl = fetchSpy.mock.lastCall[0];
-      expect(fetchUrl).toMatch(
+      const url = fetchSpy.mock.lastCall[0];
+      expect(url.search).toMatch(
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
@@ -192,8 +194,8 @@ describe('GuardianContentClient', () => {
         orderBy: 'newest',
       });
       // Just need to make sure the http request is provided the correct query string.
-      const fetchUrl = fetchSpy.mock.lastCall[0];
-      expect(fetchUrl).toMatch(
+      const url = fetchSpy.mock.lastCall[0];
+      expect(url.search).toMatch(
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
@@ -215,8 +217,8 @@ describe('GuardianContentClient', () => {
         orderBy: 'newest',
       });
       // Just need to make sure the http request is provided the correct query string.
-      const fetchUrl = fetchSpy.mock.lastCall[0];
-      expect(fetchUrl).toMatch(
+      const url = fetchSpy.mock.lastCall[0];
+      expect(url.search).toMatch(
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
@@ -238,8 +240,8 @@ describe('GuardianContentClient', () => {
         orderBy: 'newest',
       });
       // Just need to make sure the http request is provided the correct query string.
-      const fetchUrl = fetchSpy.mock.lastCall[0];
-      expect(fetchUrl).toMatch(
+      const url = fetchSpy.mock.lastCall[0];
+      expect(url.search).toMatch(
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
