@@ -44,6 +44,7 @@ interface Content extends ApiItem {
   isHosted: boolean;
   pillarId: string;
   pillarName: string;
+  fields?: object;
 }
 
 interface Tag extends ApiItem {
