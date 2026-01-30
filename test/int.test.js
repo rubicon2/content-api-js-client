@@ -119,4 +119,52 @@ describe('GuardianContentClient', () => {
       }
     });
   });
+
+  describe('tags endpoint', () => {
+    it('returns an array of tag items', async () => {
+      const tags = await client.tags();
+      expect(Array.isArray(tags)).toStrictEqual(true);
+    });
+
+    it('with a first parameter of query object, turn into a query string and append to request', async () => {
+      const tags = await client.tags({
+        q: 'mega',
+      });
+      for (const tag of tags) {
+        expect(tag.webTitle).toMatch(/mega/i);
+      }
+    });
+  });
+
+  describe('sections endpoint', () => {
+    it('returns an array of section items', async () => {
+      const sections = await client.sections();
+      expect(Array.isArray(sections)).toStrictEqual(true);
+    });
+
+    it('with a first parameter of query object, turn into a query string and append to request', async () => {
+      const sections = await client.sections({
+        q: 'football',
+      });
+      for (const section of sections) {
+        expect(section.webTitle).toMatch(/football/i);
+      }
+    });
+  });
+
+  describe('editions endpoint', () => {
+    it('returns an array of edition items', async () => {
+      const editions = await client.editions();
+      expect(Array.isArray(editions)).toStrictEqual(true);
+    });
+
+    it('with a first parameter of query object, turn into a query string and append to request', async () => {
+      const editions = await client.editions({
+        q: 'europe',
+      });
+      for (const edition of editions) {
+        expect(edition.edition).toMatch(/europe/i);
+      }
+    });
+  });
 });
