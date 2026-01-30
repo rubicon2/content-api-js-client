@@ -8,91 +8,62 @@ class Client {
     this.#apiKey = apiKey;
   }
 
-  async item(id: string, params: ContentParams = {}): Promise<Content> {
+  async #apiFetch<ReturnType>(
+    url: string,
+    params:
+      | ContentParams
+      | QueryContentParams
+      | QueryTagParams
+      | QuerySectionParams
+      | QueryEditionParams,
+  ) {
     const response: Response = await fetch(
-      `${this.#baseUrl}/${id}?api-key=${this.#apiKey}&${paramsToStr(params)}`,
+      `${this.#baseUrl}/${url}?api-key=${this.#apiKey}&${paramsToStr(params)}`,
     );
 
     if (response.ok) {
       const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiResponseSingle;
-      return data.content;
+      const data = apiResponse.response as ReturnType;
+      return data;
     } else {
       throw new Error('Fetch request failed: ' + response.status);
     }
   }
 
-  async search(params: QueryContentParams = {}): Promise<Array<Content>> {
-    const response: Response = await fetch(
-      `${this.#baseUrl}/search?api-key=${this.#apiKey}&${paramsToStr(params)}`,
-    );
+  async item(id: string, params: ContentParams = {}): Promise<Content> {
+    const data: ApiResponseSingle = await this.#apiFetch(id, params);
+    return data.content;
+  }
 
-    if (response.ok) {
-      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiSearchResponse;
-      return data.results;
-    } else {
-      throw new Error('Fetch request failed: ' + response.status);
-    }
+  async search(params: QueryContentParams = {}): Promise<Array<Content>> {
+    const data: ApiSearchResponse = await this.#apiFetch('search', params);
+    return data.results;
   }
 
   async next(
     id: string,
     params: QueryContentParams = {},
   ): Promise<Array<Content>> {
-    const response: Response = await fetch(
-      `${this.#baseUrl}/content/${id}/next?api-key=${this.#apiKey}&${paramsToStr(params)}`,
+    const data: ApiSearchResponse = await this.#apiFetch(
+      `content/${id}/next`,
+      params,
     );
-
-    if (response.ok) {
-      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiSearchResponse;
-      return data.results;
-    } else {
-      throw new Error('Fetch request failed: ' + response.status);
-    }
+    return data.results;
   }
 
   async tags(params: QueryTagParams = {}): Promise<Array<Tag>> {
-    const response: Response = await fetch(
-      `${this.#baseUrl}/tags?api-key=${this.#apiKey}&${paramsToStr(params)}`,
-    );
-
-    if (response.ok) {
-      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiTagsResponse;
-      return data.results;
-    } else {
-      throw new Error('Fetch request failed: ' + response.status);
-    }
+    const data: ApiTagsResponse = await this.#apiFetch('tags', params);
+    return data.results;
   }
 
   async sections(params: QuerySectionParams = {}): Promise<Array<Section>> {
-    const response: Response = await fetch(
-      `${this.#baseUrl}/sections?api-key=${this.#apiKey}&${paramsToStr(params)}`,
-    );
-
-    if (response.ok) {
-      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiSectionsResponse;
-      return data.results;
-    } else {
-      throw new Error('Fetch request failed: ' + response.status);
-    }
+    const data: ApiSectionsResponse = await this.#apiFetch('sections', params);
+    return data.results;
   }
 
   async editions(params: QueryEditionParams = {}): Promise<Array<Edition>> {
-    const response: Response = await fetch(
-      `${this.#baseUrl}/editions?api-key=${this.#apiKey}&${paramsToStr(params)}`,
-    );
-
-    if (response.ok) {
-      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ApiEditionsResponse;
-      return data.results;
-    } else {
-      throw new Error('Fetch request failed: ' + response.status);
-    }
+    const data: ApiEditionsResponse = await this.#apiFetch('editions', params);
+    return data.results;
   }
 }
 
