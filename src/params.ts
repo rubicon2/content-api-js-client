@@ -2,7 +2,7 @@ function camelCaseToKebabCase(str: string): string {
   return str.replaceAll(/[A-Z]/g, (s) => '-' + s.toLowerCase());
 }
 
-export function paramsToStr(obj = {}): string {
+export function paramsToStr(obj: object = {}): string {
   const str = Object.entries(obj)
     .map(([key, value]) => {
       const kebabKey = camelCaseToKebabCase(key);
