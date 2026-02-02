@@ -82,18 +82,18 @@ interface ContentParams {
   pageSize?: number;
   orderBy?: SortOrder;
   orderDate?: OrderDate;
-  showFields?: Array<ShowField>;
-  showTags?: Array<ShowTag>;
+  showFields?: string | Array<ShowField>;
+  showTags?: string | Array<ShowTag>;
   showSection?: boolean;
   showBlocks?: string; // Too complicated to try and make into a type?
-  showElements?: Array<ShowElement>;
-  showReferences?: Array<ShowReference>;
-  showRights?: Array<ShowRight>;
+  showElements?: string | Array<ShowElement>;
+  showReferences?: string | Array<ShowReference>;
+  showRights?: string | Array<ShowRight>;
 }
 
 interface QueryContentParams extends ContentParams {
   q?: string;
-  queryFields?: Array<string>;
+  queryFields?: string | Array<string>;
 }
 
 interface QueryTagParams {
