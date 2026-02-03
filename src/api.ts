@@ -1,28 +1,30 @@
+import type { SortOrder } from './params.js';
+
 // Deal with the shape of the initial JSON response.
-interface ApiResponse {
+export interface ApiResponse {
   response: ApiResponseSuccessBody | ApiResponseErrorBody;
 }
 
-interface ApiResponseErrorBody {
+export interface ApiResponseErrorBody {
   status: 'error';
   message: string;
 }
 
-interface ApiResponseSuccessBody {
+export interface ApiResponseSuccessBody {
   status: 'ok';
   userTier: 'developer' | 'commercial';
   total: number;
 }
 
-interface ApiResponseSingle<T> extends ApiResponseSuccessBody {
+export interface ApiResponseSingle<T> extends ApiResponseSuccessBody {
   content: T;
 }
 
-interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
+export interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
   results: Array<T>;
 }
 
-interface ApiSearchResponse<T> extends ApiResponseMultiple<T> {
+export interface ApiSearchResponse<T> extends ApiResponseMultiple<T> {
   startIndex: number;
   pageSize: number;
   currentPage: number;
@@ -30,14 +32,14 @@ interface ApiSearchResponse<T> extends ApiResponseMultiple<T> {
   orderBy: SortOrder;
 }
 
-interface ApiItem {
+export interface ApiItem {
   id: string;
   webTitle: string;
   webUrl: string;
   apiUrl: string;
 }
 
-interface Content extends ApiItem {
+export interface Content extends ApiItem {
   type: string;
   sectionId: string;
   sectionName: string;
@@ -48,23 +50,23 @@ interface Content extends ApiItem {
   fields?: object;
 }
 
-interface Tag extends ApiItem {
+export interface Tag extends ApiItem {
   type: string;
   sectionId: string;
   sectionName: string;
 }
 
-interface Edition extends ApiItem {
+export interface Edition extends ApiItem {
   path: string;
   edition: string;
 }
 
 // Edition has path and edition strings, but Section > Editions has neither, but has code.
 // Instead of extending or Pick<> or anything like that, just make a separate type for it.
-interface SectionEdition extends ApiItem {
+export interface SectionEdition extends ApiItem {
   code: string;
 }
 
-interface Section extends ApiItem {
+export interface Section extends ApiItem {
   editions: Array<SectionEdition>;
 }

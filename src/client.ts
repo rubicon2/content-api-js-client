@@ -1,3 +1,20 @@
+import type {
+  ContentParams,
+  QueryContentParams,
+  QueryTagParams,
+  QuerySectionParams,
+  QueryEditionParams,
+} from './params.js';
+import type {
+  ApiResponse,
+  ApiResponseSingle,
+  ApiResponseMultiple,
+  ApiSearchResponse,
+  Content,
+  Tag,
+  Section,
+  Edition,
+} from './api.js';
 import { paramsToStr } from './params.js';
 
 class Client {
