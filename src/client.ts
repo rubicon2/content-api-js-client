@@ -105,7 +105,11 @@ class Client {
    * @param {QueryTagParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/tag} for details.
    */
   async tags(params: QueryTagParams = {}): Promise<Array<Tag>> {
-    const data: ApiResponseMultiple<Tag> = await this.#apiFetch('tags', params);
+    // Omit 'orderBy' from ApiPagedResponse interface, since for some reason it is not included in api response.
+    const data: Omit<ApiPagedResponse<Tag>, 'orderBy'> = await this.#apiFetch(
+      'tags',
+      params,
+    );
     return data.results;
   }
 
