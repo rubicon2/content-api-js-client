@@ -48,12 +48,27 @@ export interface Content extends ApiItem {
   pillarId: string;
   pillarName: string;
   fields?: object;
+  tags?: Array<Tag>;
+  blocks?: object;
+  section?: object;
+}
+
+export interface Sponsorship {
+  sponsorshipType: string;
+  sponsorName: string;
+  sponsorLogo: string;
+  sponsorLink: string;
+  sponsorLogoDimensions: { width: number; height: number };
+  paidContentType: string;
 }
 
 export interface Tag extends ApiItem {
   type: string;
-  sectionId: string;
-  sectionName: string;
+  sectionId?: string;
+  sectionName?: string;
+  activeSponsorships?: Array<Sponsorship>;
+  paidContentType?: string;
+  keywordType?: string;
 }
 
 export interface Edition extends ApiItem {
