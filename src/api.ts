@@ -24,7 +24,7 @@ export interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
   results: Array<T>;
 }
 
-export interface ApiSearchResponse<T> extends ApiResponseMultiple<T> {
+export interface ApiPagedResponse<T> extends ApiResponseMultiple<T> {
   startIndex: number;
   pageSize: number;
   currentPage: number;

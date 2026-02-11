@@ -9,7 +9,7 @@ import type {
   ApiResponse,
   ApiResponseSingle,
   ApiResponseMultiple,
-  ApiSearchResponse,
+  ApiPagedResponse,
   Content,
   Tag,
   Section,
@@ -73,7 +73,7 @@ class Client {
    * @param {QueryContentParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/search} for details.
    */
   async search(params: QueryContentParams = {}): Promise<Array<Content>> {
-    const data: ApiSearchResponse<Content> = await this.#apiFetch(
+    const data: ApiPagedResponse<Content> = await this.#apiFetch(
       'search',
       params,
     );
@@ -93,7 +93,7 @@ class Client {
     id: string,
     params: QueryContentParams = {},
   ): Promise<Array<Content>> {
-    const data: ApiSearchResponse<Content> = await this.#apiFetch(
+    const data: ApiPagedResponse<Content> = await this.#apiFetch(
       `content/${id}/next`,
       params,
     );
