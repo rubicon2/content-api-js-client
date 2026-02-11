@@ -95,7 +95,7 @@ export type ShowRight = 'syndicatable' | 'subscription-databases' | 'all';
 // Interfaces to encapsulate the accepted fields by each API endpoint.
 
 /**
- * The accepted query parameters for the ```item``` API endpoint.
+ * Query parameters common to the ```item```, ```search``` and ```next``` API endpoints.
  */
 export interface ContentParams {
   /**
@@ -196,6 +196,9 @@ export interface ContentParams {
   showRights?: string | Array<ShowRight>;
 }
 
+/**
+ * The accepted query parameters for the ```item``` API endpoint.
+ */
 export interface QueryItemParams extends ContentParams {
   /**
    * When true, display a list of content that has been identified as being
