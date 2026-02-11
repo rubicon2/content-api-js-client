@@ -1,5 +1,5 @@
 import type {
-  ContentParams,
+  QueryItemParams,
   QueryContentParams,
   QueryTagParams,
   QuerySectionParams,
@@ -37,7 +37,7 @@ class Client {
   async #apiFetch<ReturnType>(
     url: string,
     params:
-      | ContentParams
+      | QueryItemParams
       | QueryContentParams
       | QueryTagParams
       | QuerySectionParams
@@ -63,7 +63,7 @@ class Client {
    * @param {string} id The id of the item to be retrieved.
    * @param {ContentParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/item} for details.
    */
-  async item(id: string, params: ContentParams = {}): Promise<Content> {
+  async item(id: string, params: QueryItemParams = {}): Promise<Content> {
     const data: ApiResponseSingle<Content> = await this.#apiFetch(id, params);
     return data.content;
   }

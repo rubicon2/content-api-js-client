@@ -196,6 +196,26 @@ export interface ContentParams {
   showRights?: string | Array<ShowRight>;
 }
 
+export interface QueryItemParams extends ContentParams {
+  /**
+   * When true, display a list of content that has been identified as being
+   * about the same story as the requested content item. When a content
+   * item is in a package the hasStoryPackage field has a value of true.
+   */
+  showStoryPackage?: boolean;
+  /**
+   * When true, display a list of content that is chosen by editors on tags,
+   * sections and the home page. This content list represents the main list
+   * of content found on the equivalent path on the site.
+   */
+  showEditorsPicks?: boolean;
+  /**
+   * When true, display most viewed content. For overall most viewed, set id
+   * to '/', and for section most viewed set id to the section id.
+   */
+  showMostViewed?: boolean;
+}
+
 /**
  * Since the ```q``` parameter is common to many endpoints, and I only
  * want to have to document it once, it is in its own interface.
