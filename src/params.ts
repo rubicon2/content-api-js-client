@@ -27,7 +27,7 @@ export type ShowField =
   | 'lastModified'
   | 'hasStoryPackage'
   | 'score'
-  | 'standFirst'
+  | 'standfirst'
   | 'shortUrl'
   | 'thumbnail'
   | 'wordcount'
