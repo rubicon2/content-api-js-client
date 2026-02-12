@@ -206,7 +206,7 @@ export interface ContentParams {
   /** Add associated media elements such as images and audio. */
   showElements?: string | Array<ElementName | 'all'>;
   /** Add associated reference data such as ISBNs. */
-  showReferences?: string | Array<ReferenceName>;
+  showReferences?: string | Array<ReferenceName | 'all'>;
   /** Add associated rights. */
   showRights?: string | Array<RightName | 'all'>;
 }
@@ -308,7 +308,7 @@ export interface QueryTagParams extends QueryParam {
   /**
    * Show associated reference data such as ISBNs.
    */
-  showReferences?: string | Array<ReferenceName>;
+  showReferences?: string | Array<ReferenceName | 'all'>;
 }
 
 /**
