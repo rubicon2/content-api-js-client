@@ -269,13 +269,45 @@ export interface QueryContentParams extends ContentParams, QueryParam {
  * The accepted query parameters for the ```tag``` API endpoint.
  */
 export interface QueryTagParams extends QueryParam {
+  /**
+   * Request tags starting with this free text.
+   * @example
+   * sausa
+   */
   webTitle?: string;
+  /**
+   * Return only tags of that type.
+   */
   type?: string;
+  /**
+   * Return only tags in those sections. Accepts boolean parameters.
+   * @example
+   * football
+   */
   section?: string;
+  /**
+   * Return only tags with those references. Accepts boolean parameters.
+   * @example
+   * isbn/9780349108391
+   */
   reference?: string;
+  /**
+   * Return only tags with references of those types. Accepts boolean parameters.
+   * @example
+   * isbn
+   */
   referenceType?: string;
+  /**
+   * Returns results only for that page index.
+   */
   page?: number;
+  /**
+   * Modify the number of items displayed per page. Defaults to 10.
+   */
   pageSize?: number;
+  /**
+   * Show associated reference data such as ISBNs.
+   */
   showReferences?: Array<ReferenceName>;
 }
 
