@@ -41,7 +41,6 @@ export type FieldName =
   | 'liveBloggingNow'
   | 'commentCloseDate'
   | 'starRating'
-  | 'all'
   // Found in the API responses but not in documentation.
   | 'firstPublicationDate'
   | 'isInappropriateForSponsorship'
@@ -70,11 +69,14 @@ export type TagName =
   | 'series'
   | 'tone'
   | 'type'
-  | 'all';
+  // Found on API response message when trying to search for multiple tag types (a list is not accepted).
+  | 'campaign'
+  | 'paid-content'
+  | 'tracking';
 /**
  * The values accepted by the API for the ```showElements``` parameter.
  */
-export type ElementName = 'audio' | 'image' | 'video' | 'all';
+export type ElementName = 'audio' | 'image' | 'video';
 /**
  * The values accepted by the API for the ```showReferences``` parameter.
  */
@@ -103,7 +105,7 @@ export type ReferenceName =
 /**
  * The values accepted by the API for the ```showRights``` parameter.
  */
-export type RightName = 'syndicatable' | 'subscription-databases' | 'all';
+export type RightName = 'syndicatable' | 'subscription-databases';
 
 // Interfaces to encapsulate the accepted fields by each API endpoint.
 
@@ -178,9 +180,9 @@ export interface ContentParams {
   /** Changes which type of date is used to order the results. Defaults to ```published```. */
   orderDate?: OrderDate;
   /** Add fields associated with the content. An array containing the fields will be added to the ```fields``` property on the returned object. */
-  showFields?: string | Array<FieldName>;
+  showFields?: string | Array<FieldName | 'all'>;
   /** Add associated metadata tags. An array containing the tags will be added to the ```tags``` property on the returned object. */
-  showTags?: string | Array<TagName>;
+  showTags?: string | Array<TagName | 'all'>;
   /** Add associated metadata section. The section will be added to the ```section``` property on the returned object.  */
   showSection?: boolean;
   /**
@@ -202,11 +204,11 @@ export interface ContentParams {
    */
   showBlocks?: string; // Too complicated to try and make into a type?
   /** Add associated media elements such as images and audio. */
-  showElements?: string | Array<ElementName>;
+  showElements?: string | Array<ElementName | 'all'>;
   /** Add associated reference data such as ISBNs. */
   showReferences?: string | Array<ReferenceName>;
   /** Add associated rights. */
-  showRights?: string | Array<RightName>;
+  showRights?: string | Array<RightName | 'all'>;
 }
 
 /**
@@ -260,7 +262,7 @@ export interface QueryContentParams extends ContentParams, QueryParam {
    * body,
    * thumbnail
    */
-  queryFields?: string | Array<FieldName>;
+  queryFields?: string | Array<FieldName | 'all'>;
 }
 
 /**
