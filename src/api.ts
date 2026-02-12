@@ -205,7 +205,12 @@ export interface ContentBlock {
   id: string;
   bodyHtml: string;
   bodyTextSummary: string;
+  title?: string;
   attributes: {
+    keyEvent?: boolean;
+    title?: string;
+    pinned?: boolean;
+    // In case there are other attributes I have not encountered.
     [key: string]: unknown;
   };
   published: boolean;
