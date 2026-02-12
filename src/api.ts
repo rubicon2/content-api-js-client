@@ -256,12 +256,40 @@ export interface Sponsorship {
 }
 
 export interface Tag extends ApiItem {
+  /**
+   * The type of the tag.
+   */
   type: string;
+  /**
+   * The id of the section. Appears on blog, keyword, newspaper-book,
+   * newspaper-book-section, series and some publication tags.
+   */
   sectionId?: string;
+  /**
+   * The name of the section. Appears on blog, keyword, newspaper-book,
+   * newspaper-book-section, series and some publication tags.
+   */
   sectionName?: string;
+  /**
+   * Appears on paid-content tags.
+   */
   activeSponsorships?: Array<Sponsorship>;
+  /**
+   * Appears on paid-content tags.
+   */
   paidContentType?: string;
+  /**
+   * Appears on keyword tags.
+   */
   keywordType?: string;
+  /**
+   * Appears on contributor tags.
+   */
+  bio?: string;
+  /**
+   * Appears on campaign tags.
+   */
+  campaignInformationType?: string;
 }
 
 export interface ContentTag extends Tag {
