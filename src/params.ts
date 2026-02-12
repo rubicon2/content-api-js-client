@@ -60,7 +60,7 @@ export type FieldName =
 /**
  * The values accepted by the API for the ```showTags``` parameter.
  */
-export type ShowTag =
+export type TagName =
   | 'blog'
   | 'contributor'
   | 'keyword'
@@ -74,11 +74,11 @@ export type ShowTag =
 /**
  * The values accepted by the API for the ```showElements``` parameter.
  */
-export type ShowElement = 'audio' | 'image' | 'video' | 'all';
+export type ElementName = 'audio' | 'image' | 'video' | 'all';
 /**
  * The values accepted by the API for the ```showReferences``` parameter.
  */
-export type ShowReference =
+export type ReferenceName =
   | 'author'
   | 'bisac-prefix'
   | 'esa-cricket-match'
@@ -103,7 +103,7 @@ export type ShowReference =
 /**
  * The values accepted by the API for the ```showRights``` parameter.
  */
-export type ShowRight = 'syndicatable' | 'subscription-databases' | 'all';
+export type RightName = 'syndicatable' | 'subscription-databases' | 'all';
 
 // Interfaces to encapsulate the accepted fields by each API endpoint.
 
@@ -180,7 +180,7 @@ export interface ContentParams {
   /** Add fields associated with the content. An array containing the fields will be added to the ```fields``` property on the returned object. */
   showFields?: string | Array<FieldName>;
   /** Add associated metadata tags. An array containing the tags will be added to the ```tags``` property on the returned object. */
-  showTags?: string | Array<ShowTag>;
+  showTags?: string | Array<TagName>;
   /** Add associated metadata section. The section will be added to the ```section``` property on the returned object.  */
   showSection?: boolean;
   /**
@@ -202,11 +202,11 @@ export interface ContentParams {
    */
   showBlocks?: string; // Too complicated to try and make into a type?
   /** Add associated media elements such as images and audio. */
-  showElements?: string | Array<ShowElement>;
+  showElements?: string | Array<ElementName>;
   /** Add associated reference data such as ISBNs. */
-  showReferences?: string | Array<ShowReference>;
+  showReferences?: string | Array<ReferenceName>;
   /** Add associated rights. */
-  showRights?: string | Array<ShowRight>;
+  showRights?: string | Array<RightName>;
 }
 
 /**
@@ -267,7 +267,7 @@ export interface QueryTagParams extends QueryParam {
   referenceType?: string;
   page?: number;
   pageSize?: number;
-  showReferences?: Array<ShowReference>;
+  showReferences?: Array<ReferenceName>;
 }
 
 /**
