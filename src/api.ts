@@ -41,6 +41,10 @@ export interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
 }
 
 export interface ApiPagedResponse<T> extends ApiResponseMultiple<T> {
+  /**
+   * The description in the documentation is literally "?".
+   * I have tried using it and it seems to do nothing.
+   */
   startIndex: number;
   /**
    * The number of items returned in this call.
