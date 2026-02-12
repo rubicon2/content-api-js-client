@@ -297,16 +297,28 @@ export interface ContentTag extends Tag {
 }
 
 export interface Edition extends ApiItem {
+  /**
+   * The path of the edition.
+   */
   path: string;
+  /**
+   * The edition name.
+   */
   edition: string;
 }
 
 // Edition has path and edition strings, but Section > Editions has neither, but has code.
 // Instead of extending or Pick<> or anything like that, just make a separate type for it.
 export interface SectionEdition extends ApiItem {
+  /**
+   * The code of the edition.
+   */
   code: string;
 }
 
 export interface Section extends ApiItem {
+  /**
+   * The list of existing editions for this section.
+   */
   editions: Array<SectionEdition>;
 }
