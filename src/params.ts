@@ -278,7 +278,7 @@ export interface QueryTagParams extends QueryParam {
   /**
    * Return only tags of that type.
    */
-  type?: string;
+  type?: TagName;
   /**
    * Return only tags in those sections. Accepts boolean parameters.
    * @example
