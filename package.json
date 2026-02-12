@@ -9,7 +9,8 @@
     "test:unit": "vitest --config vite.unit.config.js",
     "test:int": "vitest --config vite.int.config.js",
     "build": "rm -rf dist/* && npx tsc",
-    "build:watch": "rm -rf dist/* && npx tsc --watch"
+    "build:watch": "rm -rf dist/* && npx tsc --watch",
+    "prepublish": "pnpm run build"
   },
   "keywords": [
     "guardian",
