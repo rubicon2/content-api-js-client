@@ -1,4 +1,4 @@
-import type { SortOrder } from './params.js';
+import type { FieldName, SortOrder } from './params.js';
 
 // Deal with the shape of the initial JSON response.
 export interface ApiResponse {
@@ -103,10 +103,7 @@ export interface Content extends ApiItem {
    * The ```fields``` object will only be present if the ```showFields```
    * property was included on the query parameters.
    */
-  // We can't know for sure all possible fields, since different content
-  // items return different field properties when show-field=all is set.
-  // So instead of using Record<ShowField, string>, just do this.
-  fields?: { [key: string]: string };
+  fields?: Partial<Record<FieldName, string>>;
   /**
    * The ```tags``` array will only be present if the ```showTags```
    * property was included on the query parameters.
