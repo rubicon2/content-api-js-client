@@ -241,7 +241,9 @@ export interface QueryItemParams extends ContentParams {
 export interface QueryParam {
   /**
    * Request content containing this free text. Supports AND, OR and
-   * NOT operators, and exact phrase queries using double quotes.
+   * NOT operators, grouping with parantheses, and exact phrase queries
+   * using double quotes. The operators have to be all uppercase, or
+   * they will be considered part of the query phrase.
    * @example
    * sausages
    * "pork sausages"
