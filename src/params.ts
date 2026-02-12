@@ -308,7 +308,7 @@ export interface QueryTagParams extends QueryParam {
   /**
    * Show associated reference data such as ISBNs.
    */
-  showReferences?: Array<ReferenceName>;
+  showReferences?: string | Array<ReferenceName>;
 }
 
 /**
