@@ -202,9 +202,24 @@ export interface ElementAsset {
 }
 
 export interface ContentBlock {
+  /**
+   * The id of the content block. Does not pertain to
+   * content ids on the API, i.e. you cannot retrieve this
+   * block from the API with its id like you would a content
+   * item.
+   */
   id: string;
+  /**
+   * The block body including html tags.
+   */
   bodyHtml: string;
+  /**
+   * The text content of the block body, stripped of html tags.
+   */
   bodyTextSummary: string;
+  /**
+   * Title of the block. Does not always appear.
+   */
   title?: string;
   attributes: {
     keyEvent?: boolean;
@@ -218,11 +233,17 @@ export interface ContentBlock {
   firstPublishedDate: Date;
   publishedDate: Date;
   lastModifiedDate: Date;
-  // No content blocks found with any contributors, so unknown.
+  // No content blocks found with any contributors, so unknown type.
   contributors: Array<unknown>;
   // These elements are not the same shape as ContentElement, and
   // can have different properties depending on the element type.
-  elements: Array<unknown>;
+  elements: Array<{
+    type: string;
+    assets: Array<unknown>;
+    // Can include property of textTypeData, contentAtomTypeData,
+    // richLinkTypeData, so use unknown type.
+    [key: string]: unknown;
+  }>;
 }
 
 export interface Sponsorship {
