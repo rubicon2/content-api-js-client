@@ -253,6 +253,13 @@ export interface QueryParam {
  * The accepted query parameters for the ```search``` and ```next``` API endpoints.
  */
 export interface QueryContentParams extends ContentParams, QueryParam {
+  /**
+   * Specify in which indexed fields query terms should be searched on.
+   * @example
+   * headline,
+   * body,
+   * thumbnail
+   */
   queryFields?: string | Array<FieldName>;
 }
 
