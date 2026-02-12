@@ -176,28 +176,31 @@ export interface ContentElement {
   /**
    * The element assets, typically images or links.
    */
-  assets: Array<{
-    /**
-     * The type of asset.
-     */
-    type: string;
-    /**
-     * The URL of the file.
-     */
-    file: string;
-    /**
-     * The mime type of the file. For some reason, does not appear on all assets.
-     */
-    mimeType?: string;
-    /**
-     * File metadata. Totally different depending on the
-     * asset type, so the data type is set to unknown.
-     */
-    typeData: {
-      [key: string]: unknown;
-    };
-  }>;
+  assets: Array<ElementAsset>;
 }
+
+export interface ElementAsset {
+  /**
+   * The type of asset.
+   */
+  type: string;
+  /**
+   * The URL of the file.
+   */
+  file: string;
+  /**
+   * The mime type of the file. For some reason, does not appear on all assets.
+   */
+  mimeType?: string;
+  /**
+   * File metadata. Totally different depending on the
+   * asset type, so the data type is set to unknown.
+   */
+  typeData: {
+    [key: string]: unknown;
+  };
+}
+
 export interface ContentBlock {
   id: string;
   bodyHtml: string;
