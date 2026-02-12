@@ -1,4 +1,4 @@
-import type { FieldName, SortOrder } from './params.js';
+import type { TagName, FieldName, SortOrder } from './params.js';
 
 // Deal with the shape of the initial JSON response.
 export interface ApiResponse {
@@ -259,7 +259,7 @@ export interface Tag extends ApiItem {
   /**
    * The type of the tag.
    */
-  type: string;
+  type: TagName;
   /**
    * The id of the section. Appears on blog, keyword, newspaper-book,
    * newspaper-book-section, series and some publication tags.
