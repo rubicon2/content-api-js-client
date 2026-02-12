@@ -68,6 +68,19 @@ describe('GuardianContentClient', () => {
         expect(item.fields.headline).toMatch(/mega/i);
       }
     });
+
+    it('q parameter works with boolean operators', async () => {
+      const content = await client.search({
+        q: 'china AND (chicken OR beef)',
+        queryFields: ['headline'],
+        showFields: ['headline'],
+      });
+      for (const item of content) {
+        const headline = item.fields.headline;
+        expect(headline).toMatch(/china/i);
+        expect(headline).toMatch(/chicken|beef/i);
+      }
+    });
   });
 
   describe('next endpoint', () => {
