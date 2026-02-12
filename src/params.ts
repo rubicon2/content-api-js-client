@@ -253,7 +253,7 @@ export interface QueryParam {
  * The accepted query parameters for the ```search``` and ```next``` API endpoints.
  */
 export interface QueryContentParams extends ContentParams, QueryParam {
-  queryFields?: string | Array<string>;
+  queryFields?: string | Array<FieldName>;
 }
 
 /**
