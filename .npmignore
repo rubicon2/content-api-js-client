@@ -145,3 +145,5 @@ test/
 .prettierignore
 .prettierrc
 tsconfig.json
+*.config.*
+pnpm-lock.yaml
