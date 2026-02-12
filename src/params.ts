@@ -13,13 +13,12 @@ export type OrderDate = 'published' | 'newspaper-edition' | 'last-modified';
  */
 export type UseDate = OrderDate | 'first-publication';
 /**
- * The values accepted by the API for the ```showFields``` parameter.
+ * The values accepted by the API for the ```queryFields``` and ```showFields``` parameters.
  * These are sourced from the documentation, although when running a search
  * with ```show-fields=all```, I can see there are many other possible fields.
- * Since there is no exhaustive list, I will leave this as specified in the
- * documentation.
+ * I have added those I have found, but there may be others.
  */
-export type ShowField =
+export type FieldName =
   | 'trailText'
   | 'headline'
   | 'showInRelatedContent'
@@ -42,8 +41,22 @@ export type ShowField =
   | 'liveBloggingNow'
   | 'commentCloseDate'
   | 'starRating'
-  | 'all';
-
+  | 'all'
+  // Found in the API responses but not in documentation.
+  | 'firstPublicationDate'
+  | 'isInappropriateForSponsorship'
+  | 'legallySensitive'
+  | 'lang'
+  | 'isLive'
+  | 'bodyText'
+  | 'charCount'
+  | 'shouldHideReaderRevenue'
+  | 'showAffiliateLinks'
+  | 'bylineHtml'
+  | 'showTableOfContents'
+  // Found on articles that have appeared in the physical newspaper.
+  | 'newspaperPageNumber'
+  | 'newspaperEditionDate';
 /**
  * The values accepted by the API for the ```showTags``` parameter.
  */
@@ -165,7 +178,7 @@ export interface ContentParams {
   /** Changes which type of date is used to order the results. Defaults to ```published```. */
   orderDate?: OrderDate;
   /** Add fields associated with the content. An array containing the fields will be added to the ```fields``` property on the returned object. */
-  showFields?: string | Array<ShowField>;
+  showFields?: string | Array<FieldName>;
   /** Add associated metadata tags. An array containing the tags will be added to the ```tags``` property on the returned object. */
   showTags?: string | Array<ShowTag>;
   /** Add associated metadata section. The section will be added to the ```section``` property on the returned object.  */
