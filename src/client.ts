@@ -18,6 +18,32 @@ import type {
 import { paramsToStr } from './params.js';
 
 /**
+ * Format of internal #apiFetch response.
+ */
+interface ClientFetchSuccess<T> {
+  ok: true;
+  data: T;
+}
+
+/**
+ * Format returned by a successful call to a client endpoint.
+ */
+interface ClientResponse<T> extends ClientFetchSuccess<T> {
+  meta: {
+    [key: string]: unknown;
+  };
+}
+
+/**
+ * Format returned by an unsuccessful call to a client endpoint.
+ */
+interface ClientError {
+  ok: false;
+  code?: number;
+  message?: string;
+}
+
+/**
  * A client to interface with the Guardian's content API.
  */
 class Client {
@@ -42,19 +68,43 @@ class Client {
       | QueryTagParams
       | QuerySectionParams
       | QueryEditionParams,
-  ) {
+  ): Promise<ClientFetchSuccess<ReturnType> | ClientError> {
     const sanitizedUrl = new URL(
       `${url}?api-key=${this.#apiKey}&${paramsToStr(params)}`,
       this.#baseUrl,
     );
-    const response: Response = await fetch(sanitizedUrl);
+    try {
+      const response: Response = await fetch(sanitizedUrl);
 
-    if (response.ok) {
-      const apiResponse: ApiResponse = (await response?.json()) as ApiResponse;
-      const data = apiResponse.response as ReturnType;
-      return data;
-    } else {
-      throw new Error('Fetch request failed: ' + response.status);
+      if (response.ok) {
+        const apiResponse: ApiResponse =
+          (await response?.json()) as ApiResponse;
+        const data = apiResponse.response as ReturnType;
+        return {
+          ok: true,
+          data,
+        };
+      } else {
+        return {
+          ok: false,
+          code: response.status,
+          message: response.statusText,
+        };
+      }
+    } catch (error) {
+      // Any type of data can be thrown in js, not just Error.
+      // So have to check before accessing message.
+      if (error instanceof Error) {
+        return {
+          ok: false,
+          message: error.message,
+        };
+      } else {
+        return {
+          ok: false,
+          message: 'An unexpected error occurred',
+        };
+      }
     }
   }
 
@@ -63,21 +113,47 @@ class Client {
    * @param {string} id The id of the item to be retrieved.
    * @param {ContentParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/item} for details.
    */
-  async item(id: string, params: QueryItemParams = {}): Promise<Content> {
-    const data: ApiResponseSingle<Content> = await this.#apiFetch(id, params);
-    return data.content;
+  async item(
+    id: string,
+    params: QueryItemParams = {},
+  ): Promise<ClientResponse<Content> | ClientError> {
+    const response = await this.#apiFetch<ApiResponseSingle<Content>>(
+      id,
+      params,
+    );
+    if (response.ok) {
+      const { content, ...meta } = response.data;
+      return {
+        ok: true,
+        data: content,
+        meta,
+      };
+    } else {
+      return response;
+    }
   }
 
   /**
    * Retrieve items based on query parameters.
    * @param {QueryContentParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/search} for details.
    */
-  async search(params: QueryContentParams = {}): Promise<Array<Content>> {
-    const data: ApiPagedResponse<Content> = await this.#apiFetch(
+  async search(
+    params: QueryContentParams = {},
+  ): Promise<ClientResponse<Array<Content>> | ClientError> {
+    const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       'search',
       params,
     );
-    return data.results;
+    if (response.ok) {
+      const { results, ...meta } = response.data;
+      return {
+        ok: true,
+        data: results,
+        meta,
+      };
+    } else {
+      return response;
+    }
   }
 
   /**
@@ -92,49 +168,93 @@ class Client {
   async next(
     id: string,
     params: QueryContentParams = {},
-  ): Promise<Array<Content>> {
-    const data: ApiPagedResponse<Content> = await this.#apiFetch(
+  ): Promise<ClientResponse<Array<Content>> | ClientError> {
+    const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       `content/${id}/next`,
       params,
     );
-    return data.results;
+    if (response.ok) {
+      const { results, ...meta } = response.data;
+      return {
+        ok: true,
+        data: results,
+        meta,
+      };
+    } else {
+      return response;
+    }
   }
 
   /**
    * Retrieve tags based on query parameters.
    * @param {QueryTagParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/tag} for details.
    */
-  async tags(params: QueryTagParams = {}): Promise<Array<Tag>> {
+  async tags(
+    params: QueryTagParams = {},
+  ): Promise<ClientResponse<Array<Tag>> | ClientError> {
     // Omit 'orderBy' from ApiPagedResponse interface, since for some reason it is not included in api response.
-    const data: Omit<ApiPagedResponse<Tag>, 'orderBy'> = await this.#apiFetch(
-      'tags',
-      params,
-    );
-    return data.results;
+    const response = await this.#apiFetch<
+      Omit<ApiPagedResponse<Tag>, 'orderBy'>
+    >('tags', params);
+    if (response.ok) {
+      // Split out content and metadata, so consumer can easily use only what they need.
+      const { results, ...meta } = response.data;
+      return {
+        ok: true,
+        data: results,
+        meta,
+      };
+    } else {
+      return response;
+    }
   }
 
   /**
    * Retrieve sections based on query parameters.
    * @param {QuerySectionParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/section} for details.
    */
-  async sections(params: QuerySectionParams = {}): Promise<Array<Section>> {
-    const data: ApiResponseMultiple<Section> = await this.#apiFetch(
+  async sections(
+    params: QuerySectionParams = {},
+  ): Promise<ClientResponse<Array<Section>> | ClientError> {
+    const response = await this.#apiFetch<ApiResponseMultiple<Section>>(
       'sections',
       params,
     );
-    return data.results;
+    if (response.ok) {
+      // Split out content and metadata, so consumer can easily use only what they need.
+      const { results, ...meta } = response.data;
+      return {
+        ok: true,
+        data: results,
+        meta,
+      };
+    } else {
+      return response;
+    }
   }
 
   /**
    * Retrieve editions based on query parameters.
    * @param {QueryEditionParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/edition} for details.
    */
-  async editions(params: QueryEditionParams = {}): Promise<Array<Edition>> {
-    const data: ApiResponseMultiple<Edition> = await this.#apiFetch(
+  async editions(
+    params: QueryEditionParams = {},
+  ): Promise<ClientResponse<Array<Edition>> | ClientError> {
+    const response = await this.#apiFetch<ApiResponseMultiple<Edition>>(
       'editions',
       params,
     );
-    return data.results;
+    if (response.ok) {
+      // Split out content and metadata, so consumer can easily use only what they need.
+      const { results, ...meta } = response.data;
+      return {
+        ok: true,
+        data: results,
+        meta,
+      };
+    } else {
+      return response;
+    }
   }
 }
 

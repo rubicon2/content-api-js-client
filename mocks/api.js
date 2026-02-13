@@ -38,6 +38,12 @@ export const server = setupServer(
     return HttpResponse.json({
       response: {
         results,
+        // Just add a load of fake metadata for tests that make sure the fields exist.
+        startIndex: 1,
+        pageSize: 10,
+        currentPage: 1,
+        pages: 1000,
+        total: 10000,
       },
     });
   }),
