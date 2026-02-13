@@ -39,6 +39,7 @@ interface ClientResponse<T> extends ClientFetchSuccess<T> {
  */
 interface ClientError {
   ok: false;
+  data: null;
   code?: number;
   message?: string;
 }
@@ -87,6 +88,7 @@ class Client {
       } else {
         return {
           ok: false,
+          data: null,
           code: response.status,
           message: response.statusText,
         };
@@ -97,11 +99,13 @@ class Client {
       if (error instanceof Error) {
         return {
           ok: false,
+          data: null,
           message: error.message,
         };
       } else {
         return {
           ok: false,
+          data: null,
           message: 'An unexpected error occurred',
         };
       }

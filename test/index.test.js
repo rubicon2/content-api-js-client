@@ -110,6 +110,7 @@ describe('GuardianContentClient', () => {
       const response = await client.item('my-invalid-item-id');
       expect(response).toStrictEqual({
         ok: false,
+        data: null,
         code: 404,
         message: 'Not Found',
       });
@@ -164,6 +165,7 @@ describe('GuardianContentClient', () => {
       const response = await client.next('my-invalid-item-id');
       expect(response).toStrictEqual({
         ok: false,
+        data: null,
         code: 404,
         message: 'Not Found',
       });
