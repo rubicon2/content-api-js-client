@@ -38,6 +38,7 @@ describe('GuardianContentClient', () => {
       const expected = {
         ok: false,
         data: null,
+        meta: null,
         code: 401,
         message: 'Unauthorized',
       };
@@ -70,6 +71,7 @@ describe('GuardianContentClient', () => {
       expect(response).toStrictEqual({
         ok: false,
         data: null,
+        meta: null,
         code: 404,
         message: 'Not Found',
       });
@@ -130,6 +132,7 @@ describe('GuardianContentClient', () => {
       expect(response).toStrictEqual({
         ok: false,
         data: null,
+        meta: null,
         code: 404,
         message: 'Not Found',
       });

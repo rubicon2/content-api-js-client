@@ -92,7 +92,7 @@ describe('GuardianContentClient', () => {
     { method: 'next', args: [testData.search.response.results[0].id] },
     { method: 'tags', args: [] },
   ])(
-    '$method endpoint should contain the necessary properties to page through the results',
+    '$method endpoint meta property should contain the necessary properties to page through the results',
     async ({ method, args }) => {
       const { ok, meta } = await client[method](...args);
       // Make sure method was called successfully before checking meta fields,
@@ -111,6 +111,7 @@ describe('GuardianContentClient', () => {
       expect(response).toStrictEqual({
         ok: false,
         data: null,
+        meta: null,
         code: 404,
         message: 'Not Found',
       });
@@ -166,6 +167,7 @@ describe('GuardianContentClient', () => {
       expect(response).toStrictEqual({
         ok: false,
         data: null,
+        meta: null,
         code: 404,
         message: 'Not Found',
       });

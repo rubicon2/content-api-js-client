@@ -40,6 +40,7 @@ interface ClientResponse<T> extends ClientFetchSuccess<T> {
 interface ClientError {
   ok: false;
   data: null;
+  meta: null;
   message: string;
   code?: number;
 }
@@ -89,6 +90,7 @@ class Client {
         return {
           ok: false,
           data: null,
+          meta: null,
           code: response.status,
           message: response.statusText,
         };
@@ -100,12 +102,14 @@ class Client {
         return {
           ok: false,
           data: null,
+          meta: null,
           message: error.message,
         };
       } else {
         return {
           ok: false,
           data: null,
+          meta: null,
           message: 'An unexpected error occurred',
         };
       }
