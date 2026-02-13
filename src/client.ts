@@ -40,8 +40,8 @@ interface ClientResponse<T> extends ClientFetchSuccess<T> {
 interface ClientError {
   ok: false;
   data: null;
+  message: string;
   code?: number;
-  message?: string;
 }
 
 /**
