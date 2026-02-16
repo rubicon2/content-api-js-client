@@ -179,7 +179,7 @@ export interface ContentParams {
   orderBy?: SortOrder;
   /** Changes which type of date is used to order the results. Defaults to ```published```. */
   orderDate?: OrderDate;
-  /** Add fields associated with the content. An array containing the fields will be added to the ```fields``` property on the returned object. */
+  /** Add fields associated with the content. An object containing the fields will be added to the ```fields``` property on the returned object. */
   showFields?: string | Array<FieldName | 'all'>;
   /** Add associated metadata tags. An array containing the tags will be added to the ```tags``` property on the returned object. */
   showTags?: string | Array<TagName | 'all'>;
