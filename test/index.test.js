@@ -88,6 +88,27 @@ describe('GuardianContentClient', () => {
   });
 
   it.each([
+    {
+      method: 'item',
+      args: ['technology/2014/feb/18/doge-such-questions-very-answered'],
+    },
+    { method: 'search', args: [] },
+    { method: 'next', args: [testData.search.response.results[0].id] },
+    { method: 'tags', args: [] },
+    { method: 'sections', args: [] },
+    { method: 'editions', args: [] },
+  ])(
+    '$method endpoint should respond with a meta property if successful, containing info about the request',
+    async ({ method, args }) => {
+      const { ok, meta } = await client[method](...args);
+      // Make sure method was called successfully before checking meta fields,
+      // since meta will not appear if method failed or hit an error.
+      expect(ok).toStrictEqual(true);
+      expect(meta).toBeDefined();
+    },
+  );
+
+  it.each([
     { method: 'search', args: [] },
     { method: 'next', args: [testData.search.response.results[0].id] },
     { method: 'tags', args: [] },
