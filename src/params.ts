@@ -160,13 +160,15 @@ export interface ContentParams {
   /**
    * Return only content published on or after that date.
    * @example
-   * 2014-02-16
+   * new Date('2014-02-16')
+   * '2014-02-16'
    */
   fromDate?: string | Date;
   /**
    * Return only content published on or before that date.
    * @example
-   * 2014-02-17
+   * new Date('2014-02-17')
+   * '2014-02-17'
    * */
   toDate?: string | Date;
   /** Changes which type of date is used to filter the results using ```from-date``` and ```to-date```. */
@@ -188,19 +190,19 @@ export interface ContentParams {
   /**
    * Add associated blocks (single block for content, one or more for liveblogs).
    * @example
-   * main
-   * body
-   * all
-   * body:latest
-   * body:latest (limit defaults to 20)
-   * body:latest:10
-   * body:oldest
-   * body:oldest:10
-   * body:<block ID> (only the block with that ID)
-   * body:around:<block ID> (the specified block and 20 blocks either side of it)
-   * body:around:<block ID>:10 (the specified block and 10 blocks either side of it)
-   * body:key-events
-   * body:published-since:1556529318000 (only blocks since given timestamp)
+   * 'main'
+   * 'body'
+   * 'all'
+   * 'body:latest'
+   * 'body:latest' (limit defaults to 20)
+   * 'body:latest:10'
+   * 'body:oldest'
+   * 'body:oldest:10'
+   * 'body:<block ID>' (only the block with that ID)
+   * 'body:around:<block ID>' (the specified block and 20 blocks either side of it)
+   * 'body:around:<block ID>:10' (the specified block and 10 blocks either side of it)
+   * 'body:key-events'
+   * 'body:published-since:1556529318000' (only blocks since given timestamp)
    */
   showBlocks?: string; // Too complicated to try and make into a type?
   /** Add associated media elements such as images and audio. */
@@ -260,9 +262,12 @@ export interface QueryContentParams extends ContentParams, QueryParam {
   /**
    * Specify in which indexed fields query terms should be searched on.
    * @example
-   * headline,
-   * body,
-   * thumbnail
+   * ['headline', 'body', 'thumbnail']
+   * 'headline, body, thumbnail'
+   * 'all'
+   * 'headline',
+   * 'body',
+   * 'thumbnail'
    */
   queryFields?: string | Array<FieldName | 'all'>;
 }
