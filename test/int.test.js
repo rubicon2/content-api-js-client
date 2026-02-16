@@ -124,6 +124,36 @@ describe('GuardianContentClient', () => {
         expect(headline).toMatch(/chicken|beef/i);
       }
     });
+
+    it('when given Date objects for fromDate and toDate, turns into correct format for API', async () => {
+      const fromDate = new Date('2026-02-15');
+      const toDate = new Date('2026-02-16');
+      const response = await client.search({
+        fromDate: fromDate,
+        toDate: toDate,
+      });
+      for (const item of response.data) {
+        const date = new Date(item.webPublicationDate);
+        expect(date.getTime()).toBeGreaterThanOrEqual(fromDate.getTime());
+        expect(date.getTime()).toBeLessThanOrEqual(toDate.getTime());
+      }
+    });
+
+    it('when given string format dates for fromDate and toDate, turns into correct format for API', async () => {
+      const fromDate = '2026-02-15';
+      const toDate = '2026-02-16';
+      const response = await client.search({
+        fromDate,
+        toDate,
+      });
+      for (const item of response.data) {
+        const date = new Date(item.webPublicationDate);
+        expect(date.getTime()).toBeGreaterThanOrEqual(
+          new Date(fromDate).getTime(),
+        );
+        expect(date.getTime()).toBeLessThanOrEqual(new Date(toDate).getTime());
+      }
+    });
   });
 
   describe('next endpoint', () => {
@@ -177,6 +207,64 @@ describe('GuardianContentClient', () => {
       );
       for (const item of nextContent) {
         expect(item.fields.headline).toMatch(/mega/i);
+      }
+    });
+
+    it('when given Date objects for fromDate and toDate, turns into correct format for API', async () => {
+      const params = {
+        q: 'mega',
+        queryFields: ['headline'],
+        showFields: ['headline'],
+        orderBy: 'oldest',
+        fromDate: new Date('2016-02-15'),
+        toDate: new Date('2026-02-15'),
+      };
+
+      let { data: originalContent } = await client.search(params);
+      // Make sure we have enough items to page over.
+      expect(originalContent.length).toBeGreaterThan(2);
+
+      // Get first item which we will skip over with next.
+      const lastItem = originalContent[0];
+
+      const response = await client.next(lastItem.id, params);
+      for (const item of response.data) {
+        const date = new Date(item.webPublicationDate);
+        expect(date.getTime()).toBeGreaterThanOrEqual(
+          new Date(params.fromDate).getTime(),
+        );
+        expect(date.getTime()).toBeLessThanOrEqual(
+          new Date(params.toDate).getTime(),
+        );
+      }
+    });
+
+    it('when given string format dates for fromDate and toDate, turns into correct format for API', async () => {
+      const params = {
+        q: 'mega',
+        queryFields: ['headline'],
+        showFields: ['headline'],
+        orderBy: 'oldest',
+        fromDate: '2016-02-15',
+        toDate: '2026-02-15',
+      };
+
+      let { data: originalContent } = await client.search(params);
+      // Make sure we have enough items to page over.
+      expect(originalContent.length).toBeGreaterThan(2);
+
+      // Get first item which we will skip over with next.
+      const lastItem = originalContent[0];
+
+      const response = await client.next(lastItem.id, params);
+      for (const item of response.data) {
+        const date = new Date(item.webPublicationDate);
+        expect(date.getTime()).toBeGreaterThanOrEqual(
+          new Date(params.fromDate).getTime(),
+        );
+        expect(date.getTime()).toBeLessThanOrEqual(
+          new Date(params.toDate).getTime(),
+        );
       }
     });
   });

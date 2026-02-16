@@ -162,13 +162,13 @@ export interface ContentParams {
    * @example
    * 2014-02-16
    */
-  fromDate?: Date;
+  fromDate?: string | Date;
   /**
    * Return only content published on or before that date.
    * @example
    * 2014-02-17
    * */
-  toDate?: Date;
+  toDate?: string | Date;
   /** Changes which type of date is used to filter the results using ```from-date``` and ```to-date```. */
   useDate?: UseDate;
   /** Return only the result set from a particular page. */
@@ -338,7 +338,35 @@ export function paramsToStr(obj: object = {}): string {
     .map(([key, value]) => {
       const kebabKey = camelCaseToKebabCase(key);
       let sanitizedValue = value;
-      if (Array.isArray(value)) sanitizedValue = value.join(',');
+
+      // Deal with any special keys here, that need to be turned into strings.
+      switch (key) {
+        case 'fromDate':
+        case 'toDate': {
+          // Make sure Date is correct format for API regardless
+          // of whether the user provides a Date object or a string.
+          try {
+            sanitizedValue = new Date(value).toISOString();
+          } catch (error) {
+            if (error instanceof Error) {
+              throw new Error(
+                `Could not format date for ${key}: ` +
+                  error.message.toLowerCase(),
+              );
+            } else {
+              throw new Error(
+                `An error occurred when trying to format the date for ${key}`,
+              );
+            }
+          }
+          break;
+        }
+        default: {
+          // Turn any arrays into a comma separated string list.
+          if (Array.isArray(value)) sanitizedValue = value.join(',');
+          break;
+        }
+      }
 
       if (
         kebabKey === 'format' &&

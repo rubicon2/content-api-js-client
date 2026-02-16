@@ -180,6 +180,14 @@ describe('GuardianContentClient', () => {
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
+
+    it('rejects invalid date values for fromDate and toDate parameters and throws a useful error message', async () => {
+      const params = {
+        fromDate: [1, 2, 3],
+        toDate: 'christmas day',
+      };
+      await expect(() => client.search(params)).rejects.toThrowError();
+    });
   });
 
   describe('next endpoint', () => {
@@ -225,6 +233,16 @@ describe('GuardianContentClient', () => {
       expect(url.search).toMatch(
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
+    });
+
+    it('rejects invalid date values for fromDate and toDate parameters and throws a useful error message', async () => {
+      const params = {
+        fromDate: [1, 2, 3],
+        toDate: 'christmas day',
+      };
+      await expect(() =>
+        client.next('my-invalid-id', params),
+      ).rejects.toThrowError();
     });
   });
 
