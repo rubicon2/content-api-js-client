@@ -147,9 +147,7 @@ class Client {
    */
   async search(
     params: QueryContentParams = {},
-  ): Promise<
-    ClientResponse<Array<Content>, ApiPagedResponseMeta> | ClientError
-  > {
+  ): Promise<ClientResponse<Content[], ApiPagedResponseMeta> | ClientError> {
     const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       'search',
       params,
@@ -178,9 +176,7 @@ class Client {
   async next(
     id: string,
     params: QueryContentParams = {},
-  ): Promise<
-    ClientResponse<Array<Content>, ApiPagedResponseMeta> | ClientError
-  > {
+  ): Promise<ClientResponse<Content[], ApiPagedResponseMeta> | ClientError> {
     const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       `content/${id}/next`,
       params,
@@ -204,8 +200,7 @@ class Client {
   async tags(
     params: QueryTagParams = {},
   ): Promise<
-    | ClientResponse<Array<Tag>, Omit<ApiPagedResponseMeta, 'orderBy'>>
-    | ClientError
+    ClientResponse<Tag[], Omit<ApiPagedResponseMeta, 'orderBy'>> | ClientError
   > {
     // Omit 'orderBy' from ApiPagedResponse interface, since for some reason it is not included in api response.
     const response = await this.#apiFetch<
@@ -230,7 +225,7 @@ class Client {
    */
   async sections(
     params: QuerySectionParams = {},
-  ): Promise<ClientResponse<Array<Section>, ApiResponseMeta> | ClientError> {
+  ): Promise<ClientResponse<Section[], ApiResponseMeta> | ClientError> {
     const response = await this.#apiFetch<ApiResponseMultiple<Section>>(
       'sections',
       params,
@@ -254,7 +249,7 @@ class Client {
    */
   async editions(
     params: QueryEditionParams = {},
-  ): Promise<ClientResponse<Array<Edition>, ApiResponseMeta> | ClientError> {
+  ): Promise<ClientResponse<Edition[], ApiResponseMeta> | ClientError> {
     const response = await this.#apiFetch<ApiResponseMultiple<Edition>>(
       'editions',
       params,
