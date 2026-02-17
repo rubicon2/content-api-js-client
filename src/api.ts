@@ -10,7 +10,8 @@ export interface ApiResponseErrorBody {
   message: string;
 }
 
-export interface ApiResponseSuccessBody {
+// This can be used for typing meta objects and response success body.
+export interface ApiResponseMeta {
   /**
    * The status of the response. It refers to the state of the API. Successful
    * calls will receive an "ok" even if your query did not return any results.
@@ -26,6 +27,9 @@ export interface ApiResponseSuccessBody {
   total: number;
 }
 
+// Make named type for readability.
+type ApiResponseSuccessBody = ApiResponseMeta;
+
 export interface ApiResponseSingle<T> extends ApiResponseSuccessBody {
   /**
    * The single item returned by the API.
@@ -40,7 +44,8 @@ export interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
   results: Array<T>;
 }
 
-export interface ApiPagedResponse<T> extends ApiResponseMultiple<T> {
+// Used for typing meta objects and response body.
+export interface ApiPagedResponseMeta extends ApiResponseMeta {
   /**
    * The description in the documentation is literally "?".
    * I have tried using it and it seems to do nothing.
@@ -63,6 +68,9 @@ export interface ApiPagedResponse<T> extends ApiResponseMultiple<T> {
    */
   orderBy: SortOrder;
 }
+
+export interface ApiPagedResponse<T>
+  extends ApiResponseMultiple<T>, ApiPagedResponseMeta {}
 
 export interface ApiItem {
   /**

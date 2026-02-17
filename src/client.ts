@@ -10,6 +10,8 @@ import type {
   ApiResponseSingle,
   ApiResponseMultiple,
   ApiPagedResponse,
+  ApiResponseMeta,
+  ApiPagedResponseMeta,
   Content,
   Tag,
   Section,
@@ -28,10 +30,8 @@ interface ClientFetchSuccess<T> {
 /**
  * Format returned by a successful call to a client endpoint.
  */
-interface ClientResponse<T> extends ClientFetchSuccess<T> {
-  meta: {
-    [key: string]: unknown;
-  };
+interface ClientResponse<DataT, MetaT> extends ClientFetchSuccess<DataT> {
+  meta: MetaT;
 }
 
 /**
@@ -124,7 +124,7 @@ class Client {
   async item(
     id: string,
     params: QueryItemParams = {},
-  ): Promise<ClientResponse<Content> | ClientError> {
+  ): Promise<ClientResponse<Content, ApiResponseMeta> | ClientError> {
     const response = await this.#apiFetch<ApiResponseSingle<Content>>(
       id,
       params,
@@ -147,7 +147,9 @@ class Client {
    */
   async search(
     params: QueryContentParams = {},
-  ): Promise<ClientResponse<Array<Content>> | ClientError> {
+  ): Promise<
+    ClientResponse<Array<Content>, ApiPagedResponseMeta> | ClientError
+  > {
     const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       'search',
       params,
@@ -176,7 +178,9 @@ class Client {
   async next(
     id: string,
     params: QueryContentParams = {},
-  ): Promise<ClientResponse<Array<Content>> | ClientError> {
+  ): Promise<
+    ClientResponse<Array<Content>, ApiPagedResponseMeta> | ClientError
+  > {
     const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       `content/${id}/next`,
       params,
@@ -199,7 +203,10 @@ class Client {
    */
   async tags(
     params: QueryTagParams = {},
-  ): Promise<ClientResponse<Array<Tag>> | ClientError> {
+  ): Promise<
+    | ClientResponse<Array<Tag>, Omit<ApiPagedResponseMeta, 'orderBy'>>
+    | ClientError
+  > {
     // Omit 'orderBy' from ApiPagedResponse interface, since for some reason it is not included in api response.
     const response = await this.#apiFetch<
       Omit<ApiPagedResponse<Tag>, 'orderBy'>
@@ -223,7 +230,7 @@ class Client {
    */
   async sections(
     params: QuerySectionParams = {},
-  ): Promise<ClientResponse<Array<Section>> | ClientError> {
+  ): Promise<ClientResponse<Array<Section>, ApiResponseMeta> | ClientError> {
     const response = await this.#apiFetch<ApiResponseMultiple<Section>>(
       'sections',
       params,
@@ -247,7 +254,7 @@ class Client {
    */
   async editions(
     params: QueryEditionParams = {},
-  ): Promise<ClientResponse<Array<Edition>> | ClientError> {
+  ): Promise<ClientResponse<Array<Edition>, ApiResponseMeta> | ClientError> {
     const response = await this.#apiFetch<ApiResponseMultiple<Edition>>(
       'editions',
       params,
