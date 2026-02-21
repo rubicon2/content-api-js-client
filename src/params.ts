@@ -321,12 +321,14 @@ export interface QueryTagParams extends QueryParam {
 /**
  * The accepted query parameters for the ```section``` API endpoint.
  */
-export type QuerySectionParams = QueryParam;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface QuerySectionParams extends QueryParam {}
 
 /**
  * The accepted query parameters for the ```edition``` API endpoint.
  */
-export type QueryEditionParams = QueryParam;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface QueryEditionParams extends QueryParam {}
 
 /**
  * Converts query string from camel case (myString) to kebab case (my-string).
