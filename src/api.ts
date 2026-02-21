@@ -1,6 +1,8 @@
 import type { TagName, FieldName, SortOrder } from './params.js';
 
-// Deal with the shape of the initial JSON response.
+/**
+ * Deal with the shape of the initial JSON response internally.
+ */
 export interface ApiResponse {
   response: ApiResponseSuccessBody | ApiResponseErrorBody;
 }
@@ -10,7 +12,13 @@ export interface ApiResponseErrorBody {
   message: string;
 }
 
-// This can be used for typing meta objects and response success body.
+/**
+ * This can be used for typing meta objects and response success body.
+ */
+/**
+ * Metadata returned by all API endpoints.
+ * Can be used for typing the API response and meta objects returned by the client.
+ */
 export interface ApiResponseMeta {
   /**
    * The status of the response. It refers to the state of the API. Successful
@@ -27,9 +35,14 @@ export interface ApiResponseMeta {
   total: number;
 }
 
-// Make named type for readability.
+/**
+ * Alias ApiResponseMeta for internal readability.
+ */
 type ApiResponseSuccessBody = ApiResponseMeta;
 
+/**
+ * Shape of response from ```item``` API endpoint.
+ */
 export interface ApiResponseSingle<T> extends ApiResponseSuccessBody {
   /**
    * The single item returned by the API.
@@ -37,6 +50,9 @@ export interface ApiResponseSingle<T> extends ApiResponseSuccessBody {
   content: T;
 }
 
+/**
+ * Shape of response from all API endpoints except ```item```.
+ */
 export interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
   /**
    * An array of items returned by the API.
@@ -44,7 +60,10 @@ export interface ApiResponseMultiple<T> extends ApiResponseSuccessBody {
   results: Array<T>;
 }
 
-// Used for typing meta objects and response body.
+/**
+ * Metadata returned by the ```search```, ```next``` and ```tags``` API endpoints.
+ * Can be used for typing the API response and meta objects returned by the client.
+ */
 export interface ApiPagedResponseMeta extends ApiResponseMeta {
   /**
    * The description in the documentation is literally "?".
@@ -69,9 +88,15 @@ export interface ApiPagedResponseMeta extends ApiResponseMeta {
   orderBy: SortOrder;
 }
 
+/**
+ * Shape of response from ```search```, ```next``` and ```tags``` API endpoints.
+ */
 export interface ApiPagedResponse<T>
   extends ApiResponseMultiple<T>, ApiPagedResponseMeta {}
 
+/**
+ * Basic properties common to all items returned by the API.
+ */
 export interface ApiItem {
   /**
    * The path to content.
@@ -91,6 +116,9 @@ export interface ApiItem {
   apiUrl: string;
 }
 
+/**
+ * Properties present on items returned by ```item```, ```search``` and ```next``` API endpoints.
+ */
 export interface Content extends ApiItem {
   /**
    * The type of content.
@@ -161,6 +189,9 @@ export interface Content extends ApiItem {
   section?: Section;
 }
 
+/**
+ * An element on a content item.
+ */
 export interface ContentElement {
   /**
    * The id of the element.
@@ -187,6 +218,9 @@ export interface ContentElement {
   assets: Array<ElementAsset>;
 }
 
+/**
+ * An asset on a content element.
+ */
 export interface ElementAsset {
   /**
    * The type of asset.
@@ -209,6 +243,9 @@ export interface ElementAsset {
   };
 }
 
+/**
+ * A block on a content item.
+ */
 export interface ContentBlock {
   /**
    * The id of the content block. Does not pertain to
@@ -254,6 +291,9 @@ export interface ContentBlock {
   }>;
 }
 
+/**
+ * A sponsorship as found on tag items.
+ */
 export interface Sponsorship {
   sponsorshipType: string;
   sponsorName: string;
@@ -263,6 +303,9 @@ export interface Sponsorship {
   paidContentType: string;
 }
 
+/**
+ * Properties present on items returned by the ```tag``` API endpoint.
+ */
 export interface Tag extends ApiItem {
   /**
    * The type of the tag.
@@ -300,10 +343,16 @@ export interface Tag extends ApiItem {
   campaignInformationType?: string;
 }
 
+/**
+ * A tag on a content item, which has an extra property.
+ */
 export interface ContentTag extends Tag {
   references: Array<{ id: string; type: string }>;
 }
 
+/**
+ * Properties present on items returned by the ```edition``` API endpoint.
+ */
 export interface Edition extends ApiItem {
   /**
    * The path of the edition.
@@ -315,8 +364,10 @@ export interface Edition extends ApiItem {
   edition: string;
 }
 
-// Edition has path and edition strings, but Section > Editions has neither, but has code.
-// Instead of extending or Pick<> or anything like that, just make a separate type for it.
+/**
+ * Edition interface has path and edition strings; Section > Editions has neither, but has a code.
+ * Instead of extending or Pick<> or anything like that, just make a separate type for it.
+ */
 export interface SectionEdition extends ApiItem {
   /**
    * The code of the edition.
@@ -324,6 +375,9 @@ export interface SectionEdition extends ApiItem {
   code: string;
 }
 
+/**
+ * Properties present on items returned by the ```section``` API endpoint.
+ */
 export interface Section extends ApiItem {
   /**
    * The list of existing editions for this section.
