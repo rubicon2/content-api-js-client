@@ -30,14 +30,14 @@ interface ClientFetchSuccess<T> {
 /**
  * Format returned by a successful call to a client endpoint.
  */
-interface ClientResponse<DataT, MetaT> extends ClientFetchSuccess<DataT> {
+export interface ClientSuccess<DataT, MetaT> extends ClientFetchSuccess<DataT> {
   meta: MetaT;
 }
 
 /**
  * Format returned by an unsuccessful call to a client endpoint.
  */
-interface ClientError {
+export interface ClientError {
   ok: false;
   data: null;
   meta: null;
@@ -45,10 +45,27 @@ interface ClientError {
   code?: number;
 }
 
+export type ClientItemResponse =
+  | ClientSuccess<Content, ApiResponseMeta>
+  | ClientError;
+export type ClientSearchResponse =
+  | ClientSuccess<Content[], ApiPagedResponseMeta>
+  | ClientError;
+export type ClientNextResponse = ClientSearchResponse;
+export type ClientTagsResponse =
+  | ClientSuccess<Tag[], Omit<ApiPagedResponseMeta, 'orderBy'>>
+  | ClientError;
+export type ClientSectionsResponse =
+  | ClientSuccess<Section[], ApiResponseMeta>
+  | ClientError;
+export type ClientEditionsResponse =
+  | ClientSuccess<Edition[], ApiResponseMeta>
+  | ClientError;
+
 /**
  * A client to interface with the Guardian's content API.
  */
-class Client {
+export default class Client {
   #apiKey: string;
   #baseUrl: string = 'https://content.guardianapis.com';
 
@@ -124,7 +141,7 @@ class Client {
   async item(
     id: string,
     params: QueryItemParams = {},
-  ): Promise<ClientResponse<Content, ApiResponseMeta> | ClientError> {
+  ): Promise<ClientItemResponse> {
     const response = await this.#apiFetch<ApiResponseSingle<Content>>(
       id,
       params,
@@ -145,9 +162,7 @@ class Client {
    * Retrieve items based on query parameters.
    * @param {QueryContentParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/search} for details.
    */
-  async search(
-    params: QueryContentParams = {},
-  ): Promise<ClientResponse<Content[], ApiPagedResponseMeta> | ClientError> {
+  async search(params: QueryContentParams = {}): Promise<ClientSearchResponse> {
     const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       'search',
       params,
@@ -176,7 +191,7 @@ class Client {
   async next(
     id: string,
     params: QueryContentParams = {},
-  ): Promise<ClientResponse<Content[], ApiPagedResponseMeta> | ClientError> {
+  ): Promise<ClientNextResponse> {
     const response = await this.#apiFetch<ApiPagedResponse<Content>>(
       `content/${id}/next`,
       params,
@@ -197,11 +212,7 @@ class Client {
    * Retrieve tags based on query parameters.
    * @param {QueryTagParams} params The parameters of the query. See {@link https://open-platform.theguardian.com/documentation/tag} for details.
    */
-  async tags(
-    params: QueryTagParams = {},
-  ): Promise<
-    ClientResponse<Tag[], Omit<ApiPagedResponseMeta, 'orderBy'>> | ClientError
-  > {
+  async tags(params: QueryTagParams = {}): Promise<ClientTagsResponse> {
     // Omit 'orderBy' from ApiPagedResponse interface, since for some reason it is not included in api response.
     const response = await this.#apiFetch<
       Omit<ApiPagedResponse<Tag>, 'orderBy'>
@@ -225,7 +236,7 @@ class Client {
    */
   async sections(
     params: QuerySectionParams = {},
-  ): Promise<ClientResponse<Section[], ApiResponseMeta> | ClientError> {
+  ): Promise<ClientSectionsResponse> {
     const response = await this.#apiFetch<ApiResponseMultiple<Section>>(
       'sections',
       params,
@@ -249,7 +260,7 @@ class Client {
    */
   async editions(
     params: QueryEditionParams = {},
-  ): Promise<ClientResponse<Edition[], ApiResponseMeta> | ClientError> {
+  ): Promise<ClientEditionsResponse> {
     const response = await this.#apiFetch<ApiResponseMultiple<Edition>>(
       'editions',
       params,
@@ -267,5 +278,3 @@ class Client {
     }
   }
 }
-
-export default Client;
