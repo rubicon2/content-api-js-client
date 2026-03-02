@@ -160,15 +160,17 @@ export interface ContentParams {
   /**
    * Return only content published on or after that date.
    * @example
-   * 2014-02-16
+   * new Date('2014-02-16')
+   * '2014-02-16'
    */
-  fromDate?: Date;
+  fromDate?: string | Date;
   /**
    * Return only content published on or before that date.
    * @example
-   * 2014-02-17
+   * new Date('2014-02-17')
+   * '2014-02-17'
    * */
-  toDate?: Date;
+  toDate?: string | Date;
   /** Changes which type of date is used to filter the results using ```from-date``` and ```to-date```. */
   useDate?: UseDate;
   /** Return only the result set from a particular page. */
@@ -179,7 +181,7 @@ export interface ContentParams {
   orderBy?: SortOrder;
   /** Changes which type of date is used to order the results. Defaults to ```published```. */
   orderDate?: OrderDate;
-  /** Add fields associated with the content. An array containing the fields will be added to the ```fields``` property on the returned object. */
+  /** Add fields associated with the content. An object containing the fields will be added to the ```fields``` property on the returned object. */
   showFields?: string | Array<FieldName | 'all'>;
   /** Add associated metadata tags. An array containing the tags will be added to the ```tags``` property on the returned object. */
   showTags?: string | Array<TagName | 'all'>;
@@ -188,19 +190,19 @@ export interface ContentParams {
   /**
    * Add associated blocks (single block for content, one or more for liveblogs).
    * @example
-   * main
-   * body
-   * all
-   * body:latest
-   * body:latest (limit defaults to 20)
-   * body:latest:10
-   * body:oldest
-   * body:oldest:10
-   * body:<block ID> (only the block with that ID)
-   * body:around:<block ID> (the specified block and 20 blocks either side of it)
-   * body:around:<block ID>:10 (the specified block and 10 blocks either side of it)
-   * body:key-events
-   * body:published-since:1556529318000 (only blocks since given timestamp)
+   * 'main'
+   * 'body'
+   * 'all'
+   * 'body:latest'
+   * 'body:latest' (limit defaults to 20)
+   * 'body:latest:10'
+   * 'body:oldest'
+   * 'body:oldest:10'
+   * 'body:<block ID>' (only the block with that ID)
+   * 'body:around:<block ID>' (the specified block and 20 blocks either side of it)
+   * 'body:around:<block ID>:10' (the specified block and 10 blocks either side of it)
+   * 'body:key-events'
+   * 'body:published-since:1556529318000' (only blocks since given timestamp)
    */
   showBlocks?: string; // Too complicated to try and make into a type?
   /** Add associated media elements such as images and audio. */
@@ -260,15 +262,18 @@ export interface QueryContentParams extends ContentParams, QueryParam {
   /**
    * Specify in which indexed fields query terms should be searched on.
    * @example
-   * headline,
-   * body,
-   * thumbnail
+   * ['headline', 'body', 'thumbnail']
+   * 'headline, body, thumbnail'
+   * 'all'
+   * 'headline',
+   * 'body',
+   * 'thumbnail'
    */
   queryFields?: string | Array<FieldName | 'all'>;
 }
 
 /**
- * The accepted query parameters for the ```tag``` API endpoint.
+ * The accepted query parameters for the ```tags``` API endpoint.
  */
 export interface QueryTagParams extends QueryParam {
   /**
@@ -314,14 +319,16 @@ export interface QueryTagParams extends QueryParam {
 }
 
 /**
- * The accepted query parameters for the ```section``` API endpoint.
+ * The accepted query parameters for the ```sections``` API endpoint.
  */
-export type QuerySectionParams = QueryParam;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface QuerySectionParams extends QueryParam {}
 
 /**
- * The accepted query parameters for the ```edition``` API endpoint.
+ * The accepted query parameters for the ```editions``` API endpoint.
  */
-export type QueryEditionParams = QueryParam;
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface QueryEditionParams extends QueryParam {}
 
 /**
  * Converts query string from camel case (myString) to kebab case (my-string).
@@ -338,7 +345,35 @@ export function paramsToStr(obj: object = {}): string {
     .map(([key, value]) => {
       const kebabKey = camelCaseToKebabCase(key);
       let sanitizedValue = value;
-      if (Array.isArray(value)) sanitizedValue = value.join(',');
+
+      // Deal with any special keys here, that need to be turned into strings.
+      switch (key) {
+        case 'fromDate':
+        case 'toDate': {
+          // Make sure Date is correct format for API regardless
+          // of whether the user provides a Date object or a string.
+          try {
+            sanitizedValue = new Date(value).toISOString();
+          } catch (error) {
+            if (error instanceof Error) {
+              throw new Error(
+                `Could not format date for ${key}: ` +
+                  error.message.toLowerCase(),
+              );
+            } else {
+              throw new Error(
+                `An error occurred when trying to format the date for ${key}`,
+              );
+            }
+          }
+          break;
+        }
+        default: {
+          // Turn any arrays into a comma separated string list.
+          if (Array.isArray(value)) sanitizedValue = value.join(',');
+          break;
+        }
+      }
 
       if (
         kebabKey === 'format' &&

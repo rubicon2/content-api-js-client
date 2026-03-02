@@ -87,18 +87,62 @@ describe('GuardianContentClient', () => {
     ).rejects.toThrowError(expectedError);
   });
 
+  it.each([
+    {
+      method: 'item',
+      args: ['technology/2014/feb/18/doge-such-questions-very-answered'],
+    },
+    { method: 'search', args: [] },
+    { method: 'next', args: [testData.search.response.results[0].id] },
+    { method: 'tags', args: [] },
+    { method: 'sections', args: [] },
+    { method: 'editions', args: [] },
+  ])(
+    '$method endpoint should respond with a meta property if successful, containing info about the request',
+    async ({ method, args }) => {
+      const { ok, meta } = await client[method](...args);
+      // Make sure method was called successfully before checking meta fields,
+      // since meta will not appear if method failed or hit an error.
+      expect(ok).toStrictEqual(true);
+      expect(meta).toBeDefined();
+    },
+  );
+
+  it.each([
+    { method: 'search', args: [] },
+    { method: 'next', args: [testData.search.response.results[0].id] },
+    { method: 'tags', args: [] },
+  ])(
+    '$method endpoint meta property should contain the necessary properties to page through the results',
+    async ({ method, args }) => {
+      const { ok, meta } = await client[method](...args);
+      // Make sure method was called successfully before checking meta fields,
+      // since meta will not appear if method failed or hit an error.
+      expect(ok).toStrictEqual(true);
+      expect(meta.currentPage).toBeDefined();
+      expect(meta.pageSize).toBeDefined();
+      expect(meta.startIndex).toBeDefined();
+      expect(meta.total).toBeDefined();
+    },
+  );
+
   describe('item endpoint', () => {
-    it('given an invalid id, throw an error with an appropriate message', async () => {
-      await expect(client.item('my-invalid-item-id')).rejects.toThrowError(
-        'Fetch request failed: 404',
-      );
+    it('given an invalid id, return with status code number, message string, and ok boolean properties', async () => {
+      const response = await client.item('my-invalid-item-id');
+      expect(response).toStrictEqual({
+        ok: false,
+        data: null,
+        meta: null,
+        code: 404,
+        message: 'Not Found',
+      });
     });
 
-    it('should take an id and return the item as an object', async () => {
-      const data = await client.item(
+    it('should take an id and return the item on the data property', async () => {
+      const response = await client.item(
         'technology/2014/feb/18/doge-such-questions-very-answered',
       );
-      expect(data).toStrictEqual(testData.item.response.content);
+      expect(response.data).toStrictEqual(testData.item.response.content);
     });
 
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
@@ -116,9 +160,9 @@ describe('GuardianContentClient', () => {
   });
 
   describe('search endpoint', () => {
-    it('returns an array of content items', async () => {
-      const content = await client.search();
-      expect(content).toStrictEqual(testData.search.response.results);
+    it('returns a data property containing an array of content items', async () => {
+      const { data } = await client.search();
+      expect(data).toStrictEqual(testData.search.response.results);
     });
 
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
@@ -136,20 +180,34 @@ describe('GuardianContentClient', () => {
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
+
+    it('rejects invalid date values for fromDate and toDate parameters and throws a useful error message', async () => {
+      const params = {
+        fromDate: [1, 2, 3],
+        toDate: 'christmas day',
+      };
+      await expect(() => client.search(params)).rejects.toThrowError();
+    });
   });
 
   describe('next endpoint', () => {
-    it('given an invalid id, throw an error with an appropriate message', async () => {
-      await expect(client.next('my-invalid-item-id')).rejects.toThrowError(
-        'Fetch request failed: 404',
-      );
+    it('given an invalid id, return with status code number, message string, and ok boolean properties', async () => {
+      const response = await client.next('my-invalid-item-id');
+      expect(response).toStrictEqual({
+        ok: false,
+        data: null,
+        meta: null,
+        code: 404,
+        message: 'Not Found',
+      });
     });
 
-    it('returns the next set of results after the provided id parameter', async () => {
+    it('returns a data property containing the next set of results after the provided id parameter', async () => {
       const originalContent = testData.search.response.results;
       let lastItem = originalContent[0];
       for (let i = 1; i < originalContent.length; i++) {
-        const nextContent = await client.next(lastItem.id);
+        const response = await client.next(lastItem.id);
+        const nextContent = response.data;
         const expectedContent = originalContent.slice(
           originalContent.findIndex((content) => content.id === lastItem.id) +
             1,
@@ -176,12 +234,22 @@ describe('GuardianContentClient', () => {
         'q=mega&query-fields=body,headline,byline&star-rating=5&lang=en&order-by=newest',
       );
     });
+
+    it('rejects invalid date values for fromDate and toDate parameters and throws a useful error message', async () => {
+      const params = {
+        fromDate: [1, 2, 3],
+        toDate: 'christmas day',
+      };
+      await expect(() =>
+        client.next('my-invalid-id', params),
+      ).rejects.toThrowError();
+    });
   });
 
   describe('tags endpoint', () => {
-    it('returns an array of tag items', async () => {
-      const tags = await client.tags();
-      expect(tags).toStrictEqual(testData.tags.response.results);
+    it('returns an array of tag items on the data property', async () => {
+      const { data } = await client.tags();
+      expect(data).toStrictEqual(testData.tags.response.results);
     });
 
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
@@ -202,9 +270,9 @@ describe('GuardianContentClient', () => {
   });
 
   describe('sections endpoint', () => {
-    it('returns an array of section items', async () => {
-      const sections = await client.sections();
-      expect(sections).toStrictEqual(testData.sections.response.results);
+    it('returns an array of section items on the data property', async () => {
+      const { data } = await client.sections();
+      expect(data).toStrictEqual(testData.sections.response.results);
     });
 
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
@@ -225,9 +293,9 @@ describe('GuardianContentClient', () => {
   });
 
   describe('editions endpoint', () => {
-    it('returns an array of edition items', async () => {
-      const editions = await client.editions();
-      expect(editions).toStrictEqual(testData.editions.response.results);
+    it('returns an array of edition items on the data property', async () => {
+      const { data } = await client.editions();
+      expect(data).toStrictEqual(testData.editions.response.results);
     });
 
     it('with a first parameter of query object, turn into a query string and append to request', async () => {
