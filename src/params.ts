@@ -273,7 +273,7 @@ export interface QueryContentParams extends ContentParams, QueryParam {
 }
 
 /**
- * The accepted query parameters for the ```tag``` API endpoint.
+ * The accepted query parameters for the ```tags``` API endpoint.
  */
 export interface QueryTagParams extends QueryParam {
   /**
@@ -319,13 +319,13 @@ export interface QueryTagParams extends QueryParam {
 }
 
 /**
- * The accepted query parameters for the ```section``` API endpoint.
+ * The accepted query parameters for the ```sections``` API endpoint.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface QuerySectionParams extends QueryParam {}
 
 /**
- * The accepted query parameters for the ```edition``` API endpoint.
+ * The accepted query parameters for the ```editions``` API endpoint.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface QueryEditionParams extends QueryParam {}
