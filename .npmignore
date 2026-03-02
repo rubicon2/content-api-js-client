@@ -140,6 +140,7 @@ vite.config.ts.timestamp-*
 # Project files not necessary for using the package
 src/
 test/
+mocks/
 .gitignore
 .npmignore
 .prettierignore
